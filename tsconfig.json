@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["bun"]
+  },
+  "include": ["scripts", "test", "eslint.config.js"],
+  "references": [{ "path": "packages/blocks-main" }]
+}

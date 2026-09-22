@@ -1,0 +1,20 @@
+/*
+ * Cascade order, declared before anything is imported: Tailwind's preflight (base) lands
+ * before Mantine's reset, and Tailwind utilities land after it, so a utility class wins on
+ * a Mantine component without `!important`.
+ *
+ * Tailwind is imported in its three parts rather than through `tailwindcss`, whose own
+ * layer statement comes first and leaves `mantine` no place but the end of the order —
+ * which is the opposite of the line above, and silent.
+ */
+@layer theme, base, mantine, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/preflight.css' layer(base);
+@import '@mantine/core/styles.layer.css';
+@import '@mantine/carousel/styles.layer.css';
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+/* Block templates live in the packages, outside this application, and are the only files
+   outside it Tailwind scans. One line per package that ships templates. */
+@source '../../../../packages/blocks-main/templates';

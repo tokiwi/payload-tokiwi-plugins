@@ -65,7 +65,7 @@ Requires [bun](https://bun.sh) 1.4.2 and Node 24, both pinned in `.bun-version` 
 ```bash
 bun install
 bun run dev      # starts the showroom against the workspace packages
-bun run build    # typecheck, build the packages, build the showroom
+bun run build    # build the packages, then the showroom
 ```
 
 ## Releasing

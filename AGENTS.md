@@ -31,14 +31,15 @@ Never:
   notes, scratch state: gitignored or kept outside the repository. `CLAUDE.md` and
   `_local/` already are.
 - **Add a package or a feature without a named second consumer.** A package is created
-  when a second *named* project will consume it, and its code is ported from a project
+  when a second _named_ project will consume it, and its code is ported from a project
   already running it in production. Everything else is refused, including "we will surely
   need it".
 - **Ship branding.** Packages carry neutral defaults. Colours, copy and logos are plugin
   options supplied by the consuming project.
-- **Ship an opinion the consumer cannot remove.** No UI library, no design system, no
-  markup a project has to fight. A package that can only be used one way does not belong
-  here.
+- **Ship an opinion the consumer cannot remove.** Nothing behind an `exports` map carries
+  a UI library, a design system or markup a project has to fight. A package that can only
+  be used one way does not belong here. `templates/` is the exception, and only because a
+  template is copied rather than imported: the project owns the file and can delete it.
 - **Break a consumer silently.** A change to a package's options, exports or component
   paths is breaking and is released as a major bump.
 - **Bypass a gate.** No `--no-verify`, no skipped CI job, no version bumped by hand, no
@@ -102,8 +103,8 @@ same CLI contract. The split is spelled out because this is where it matters mos
 - Each block exposes a minimal fixed schema plus one escape hatch,
   `fields: (defaultFields) => Field[]`. No options object larger than the code it
   configures.
-- Neutral front-end components live in `templates/`, shipped inside the tarball but absent
-  from the `exports` map: they are data, not code.
+- Front-end components live in `templates/`, shipped inside the tarball but absent from
+  the `exports` map: they are data, not code.
 - `bunx @tokiwi/payload-blocks-main add <block>` copies a template into the consumer. It
   never overwrites without `--force`, supports `--dry-run`, writes a provenance header
   (`// from @tokiwi/payload-blocks-main@x.y.z — <block>`), refuses a missing target and
@@ -111,9 +112,11 @@ same CLI contract. The split is spelled out because this is where it matters mos
   detection. It writes into someone else's project: it is the most dangerous thing here.
 - The showroom imports those same template files, so the showroom build type-checks them.
   A broken template cannot be published.
-- Templates use **core Tailwind utilities only** — no custom theme keys, no arbitrary
-  values, no plugins — so a project on another styling stack can replace them
-  mechanically.
+- Templates are **Mantine** components — `@mantine/core`, `@mantine/carousel` — because
+  that is what our projects render with, and a template that is not the code a project
+  already runs gets rewritten on arrival. Mantine is an **optional** peer dependency: a
+  consumer registering the schemas alone never installs it. Any Tailwind in a template
+  stays on core utilities, no custom theme keys, no arbitrary values, no plugins.
 - A block enters the package only when its schema is identical in two projects. Compare
   field by field before writing it.
 

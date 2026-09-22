@@ -1,0 +1,26 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "preserve",
+    "allowJs": true,
+    "noEmit": true,
+    "incremental": true,
+    "resolveJsonModule": true,
+    "plugins": [{ "name": "next" }],
+    "baseUrl": ".",
+    "paths": {
+      "@payload-config": ["./src/payload.config.ts"],
+      "@/*": ["./src/*"],
+      // Templates are data, not code: they are deliberately absent from the package's
+      // `exports` map, so the showroom reaches the real files rather than a copy. Nothing
+      // here points a package at its `src` — `@tokiwi/payload-blocks-main` still resolves
+      // through its built `dist`.
+      "@templates/blocks-main/*": ["../packages/blocks-main/templates/*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}

@@ -31,7 +31,7 @@ jobs:
           registry-url: https://registry.npmjs.org # required for npm auth
 
       - run: bun install --frozen-lockfile
-      - run: bun run build
+      - run: bun run build:packages
 
       # Opens or updates the release pull request. Publishes only when that pull request
       # has been merged, i.e. when a version bump is already on main. Never publishes a

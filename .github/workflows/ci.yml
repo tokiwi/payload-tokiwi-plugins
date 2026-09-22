@@ -78,7 +78,7 @@ jobs:
 
       # Packages are resolved through their built dist and their exports map, never
       # through tsconfig paths pointing at src. Building first is therefore mandatory.
-      - run: bun run build
+      - run: bun run build:packages
 
       - run: bunx playwright install --with-deps chromium
 
@@ -94,6 +94,33 @@ jobs:
           path: test/playwright-report
           retention-days: 7
 
+  showroom:
+    name: Showroom build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version-file: .bun-version
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+
+      - run: bun install --frozen-lockfile
+      - run: bun run build:packages
+
+      # The showroom consumes every package the way a project does, and imports the block
+      # templates from their real files, so this build is what type-checks them.
+      - run: bun run build:app
+
+      # Both files are committed and never regenerated at runtime, so a drifting one is
+      # only ever discovered by the consumer it breaks.
+      - name: Fail on a stale import map or stale types
+        run: |
+          bun run --cwd app generate:importmap
+          bun run --cwd app generate:types
+          git diff --exit-code -- app/src
+
   pack:
     name: Pack and install
     runs-on: ubuntu-latest
@@ -107,7 +134,7 @@ jobs:
           node-version-file: .node-version
 
       - run: bun install --frozen-lockfile
-      - run: bun run build
+      - run: bun run build:packages
 
       # Everything below exists because the workspace hides distribution failures: a
       # malformed exports map, a missing 'use client' boundary, a stylesheet left out of

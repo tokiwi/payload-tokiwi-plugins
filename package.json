@@ -1,0 +1,55 @@
+{
+  "name": "payload-tokiwi-plugins",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tokiwi/payload-tokiwi-plugins.git"
+  },
+  "workspaces": [
+    "app",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "bun run --cwd app dev",
+    "build": "bun run build:packages && bun run build:app",
+    "build:packages": "tsc --build packages/blocks-main",
+    "build:app": "bun run --cwd app build",
+    "typecheck": "tsc --build",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "test:int": "vitest run test/",
+    "test:types": "tstyche",
+    "changeset:version": "changeset version && bun install --lockfile-only",
+    "changeset:publish": "changeset publish",
+    "prepare": "simple-git-hooks"
+  },
+  "devDependencies": {
+    "@changesets/cli": "3.0.3",
+    "@eslint/js": "10.0.1",
+    "@tokiwi/payload-blocks-main": "workspace:*",
+    "@types/bun": "1.4.2",
+    "eslint": "10.11.0",
+    "eslint-config-prettier": "10.1.8",
+    "lint-staged": "17.5.1",
+    "payload": "3.90.1",
+    "prettier": "3.9.8",
+    "simple-git-hooks": "2.14.0",
+    "tstyche": "7.2.5",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.70.1",
+    "vitest": "5.0.1"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "bunx lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,mjs,json,md,yml,yaml}": "prettier --write",
+    "*.{ts,tsx}": "eslint --fix"
+  },
+  "engines": {
+    "bun": ">=1.4.2",
+    "node": ">=24"
+  }
+}

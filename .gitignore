@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+
+# Payload
+media/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Databases (dev/)
+*.db
+*.db-journal
+*.sqlite
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editors and OS
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Test output
+coverage/
+test-results/
+playwright-report/
+
+# Local only, never committed
+todo.md
+TODO.md
+CLAUDE.md
+_local/

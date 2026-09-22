@@ -1,0 +1,135 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  # The peer dependency floor. Keep in sync with `peerDependencies.payload` in every
+  # package.json — the matrix below is what proves the declared range is not a lie.
+  PAYLOAD_FLOOR: 3.90.0
+
+jobs:
+  check:
+    name: Typecheck, lint, changeset
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # changeset status compares against the base branch
+
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version-file: .bun-version
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+
+      - run: bun install --frozen-lockfile
+
+      - run: bun run typecheck
+      - run: bun run lint
+
+      # For a schema-only package the exported types are the product, and `tsc` proves
+      # they compile, not that they are still the right types.
+      - run: bun run test:types
+
+      - name: Require a changeset when a package changes
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch --no-tags origin "${{ github.base_ref }}"
+          if git diff --name-only "origin/${{ github.base_ref }}...HEAD" | grep -q '^packages/'; then
+            bunx changeset status --since="origin/${{ github.base_ref }}"
+          else
+            echo "No package touched by this pull request; no changeset required."
+          fi
+
+  test:
+    name: Suites (payload ${{ matrix.payload }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The floor and the ceiling. A plugin that only works on one of them is broken.
+        payload: [floor, latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version-file: .bun-version
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+
+      - name: Pin Payload
+        run: |
+          version="${{ matrix.payload == 'floor' && env.PAYLOAD_FLOOR || 'latest' }}"
+          bun run scripts/use-payload.ts "$version"
+
+      - run: bun install --no-save
+
+      # Packages are resolved through their built dist and their exports map, never
+      # through tsconfig paths pointing at src. Building first is therefore mandatory.
+      - run: bun run build
+
+      - run: bunx playwright install --with-deps chromium
+
+      # The suites run on @payloadcms/db-sqlite, so CI needs no database service.
+      - run: bun run test:int
+      - run: bun run test:e2e
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-report-${{ matrix.payload }}
+          path: test/playwright-report
+          retention-days: 7
+
+  pack:
+    name: Pack and install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version-file: .bun-version
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+
+      - run: bun install --frozen-lockfile
+      - run: bun run build
+
+      # Everything below exists because the workspace hides distribution failures: a
+      # malformed exports map, a missing 'use client' boundary, a stylesheet left out of
+      # `files`, a scoped package still restricted. This job is the only one that sees them.
+      - name: Pack every package
+        run: |
+          mkdir -p "$RUNNER_TEMP/tarballs"
+          for dir in packages/*/; do
+            (cd "$dir" && npm pack --pack-destination "$RUNNER_TEMP/tarballs")
+          done
+          ls -l "$RUNNER_TEMP/tarballs"
+
+      - name: Install the tarballs into the consumer fixture
+        working-directory: test/consumer
+        run: |
+          bun install
+          bun add "$RUNNER_TEMP"/tarballs/*.tgz
+
+      - name: Resolve admin components from the package specifiers
+        working-directory: test/consumer
+        run: bunx payload generate:importmap
+
+      - name: Build the consumer
+        working-directory: test/consumer
+        run: bun run build

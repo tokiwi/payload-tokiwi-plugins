@@ -1,0 +1,30 @@
+version: 2
+updates:
+  # The workflows pin actions by commit SHA, which only stays safe if something bumps
+  # them. This is that something.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']
+
+  # Dependabot has a dedicated bun ecosystem; it reads bun.lock, not package-lock.json.
+  # It bundles its own bun, so a lockfileVersion newer than the one it ships is rejected
+  # rather than silently mishandled — if updates stop arriving, that is the first thing
+  # to check.
+  - package-ecosystem: bun
+    directories:
+      - /
+      - /packages/*
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      # payload and every @payloadcms/* package are released in lockstep, so they are
+      # never bumped separately.
+      payload:
+        patterns: ['payload', '@payloadcms/*']
+      development:
+        dependency-type: development

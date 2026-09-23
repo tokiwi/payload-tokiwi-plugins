@@ -39,8 +39,16 @@ jobs:
       - run: bun run lint
 
       # For a schema-only package the exported types are the product, and `tsc` proves
-      # they compile, not that they are still the right types.
-      - run: bun run test:types
+      # they compile, not that they are still the right types. There is no
+      # package yet; the guard disappears on its own once there is one.
+      - name: Type tests
+        run: |
+          if compgen -G "packages/*/" > /dev/null; then
+            bun run test:types
+          else
+            echo "No package yet, so no exported types to test."
+          fi
+        shell: bash
 
       - name: Require a changeset when a package changes
         if: github.event_name == 'pull_request'
@@ -113,18 +121,32 @@ jobs:
       # malformed exports map, a missing 'use client' boundary, a stylesheet left out of
       # `files`, a scoped package still restricted. This job is the only one that sees them.
       - name: Pack every package
+        shell: bash
         run: |
+          shopt -s nullglob
           mkdir -p "$RUNNER_TEMP/tarballs"
-          for dir in packages/*/; do
+          dirs=(packages/*/)
+          if [ ${#dirs[@]} -eq 0 ]; then
+            echo "No package to pack."
+            exit 0
+          fi
+          for dir in "${dirs[@]}"; do
             (cd "$dir" && npm pack --pack-destination "$RUNNER_TEMP/tarballs")
           done
           ls -l "$RUNNER_TEMP/tarballs"
 
       - name: Install the tarballs into the consumer fixture
         working-directory: test/consumer
+        shell: bash
         run: |
+          shopt -s nullglob
           bun install
-          bun add "$RUNNER_TEMP"/tarballs/*.tgz
+          tarballs=("$RUNNER_TEMP"/tarballs/*.tgz)
+          if [ ${#tarballs[@]} -gt 0 ]; then
+            bun add "${tarballs[@]}"
+          else
+            echo "No tarball to install; building the bare fixture."
+          fi
 
       - name: Resolve admin components from the package specifiers
         working-directory: test/consumer

@@ -33,7 +33,7 @@ describe('locale reads on this Payload version', () => {
   })
 
   afterAll(async () => {
-    await payload.destroy?.()
+    await payload.destroy()
   })
 
   it('returns the source text for an untranslated locale when no fallback is given', async () => {

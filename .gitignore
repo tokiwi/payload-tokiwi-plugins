@@ -18,7 +18,7 @@ media/
 # Payload rewrites this on every boot; nothing imports it yet. Anchored to the two
 # applications that generate one, so a future packages/*/payload-types.ts is not
 # silently swallowed by a bare pattern.
-/app/payload-types.ts
+/app/src/payload-types.ts
 /test/app/payload-types.ts
 
 # Environment

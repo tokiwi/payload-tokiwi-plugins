@@ -39,6 +39,27 @@
         "@types/react-dom": "^19",
       },
     },
+    "test/app": {
+      "name": "test-app",
+      "version": "0.0.0",
+      "dependencies": {
+        "@payloadcms/db-sqlite": "3.90.2",
+        "@payloadcms/next": "3.90.2",
+        "@payloadcms/richtext-lexical": "3.90.2",
+        "@payloadcms/ui": "3.90.2",
+        "graphql": "^16.8.1",
+        "next": "16.3.6",
+        "payload": "3.90.2",
+        "react": "19.2.1",
+        "react-dom": "19.2.1",
+        "sharp": "0.34.2",
+      },
+      "devDependencies": {
+        "@types/node": "^24",
+        "@types/react": "^19",
+        "@types/react-dom": "^19",
+      },
+    },
   },
   "packages": {
     "@apidevtools/json-schema-ref-parser": ["@apidevtools/json-schema-ref-parser@11.9.3", "", { "dependencies": { "@jsdevtools/ono": "^7.1.3", "@types/json-schema": "^7.0.15", "js-yaml": "^4.1.0" } }, "sha512-60vepv88RwcJtSHrD6MjIL6Ta3SOYbgfnkHb+ppAVK+o9mXprRtulx7VlRl3lN3bbvysAfCS7WMVfhUYemB0IQ=="],
@@ -1266,6 +1287,8 @@
     "table": ["table@6.9.0", "", { "dependencies": { "ajv": "^8.0.1", "lodash.truncate": "^4.4.2", "slice-ansi": "^4.0.0", "string-width": "^4.2.3", "strip-ansi": "^6.0.1" } }, "sha512-9kY+CygyYM6j02t5YFHbNz2FN5QmYGv9zAjVp4lCDjlCw7amdckXlEt/bjMhUIfj4ThGRE4gCUH5+yGnNuPo5A=="],
 
     "term-size": ["term-size@2.2.1", "", {}, "sha512-wK0Ri4fOGjv/XPy8SBHZChl8CM7uMc5VML7SqiQ0zG7+J5Vr+RMQDoHa2CNT6KHUnTGIXH34UDMkPzAUyapBZg=="],
+
+    "test-app": ["test-app@workspace:test/app"],
 
     "thread-stream": ["thread-stream@3.2.0", "", { "dependencies": { "real-require": "^0.2.0" } }, "sha512-zLBvqpwr4Esa0kRjcrzGU6zL25lePWaCLMx0RQFrmteozIfeNdaMLpG5U7PeHzvlFkAWaRKA9/KVW4F60iB+qw=="],
 

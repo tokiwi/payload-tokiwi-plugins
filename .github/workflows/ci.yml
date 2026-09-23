@@ -35,6 +35,11 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
+      # Packages are resolved through their built dist and their exports map, never
+      # through tsconfig paths pointing at src. Building first is therefore mandatory,
+      # or a package import in app/ or test/app/ fails to resolve and typecheck reports
+      # a false TS2307 instead of a real error.
+      - run: bun run build
       - run: bun run typecheck
       - run: bun run lint
 

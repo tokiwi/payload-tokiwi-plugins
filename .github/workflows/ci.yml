@@ -157,7 +157,7 @@ jobs:
         working-directory: test/consumer
         run: bunx payload generate:importmap
 
-      - name: Verify an installed package registered its admin components
+      - name: Verify the fixture actually uses what was installed
         working-directory: test/consumer
         shell: bash
         run: |
@@ -167,13 +167,17 @@ jobs:
             echo "No tarball installed; nothing to verify."
             exit 0
           fi
-          if git diff --quiet -- 'src/app/(payload)/admin/importMap.js'; then
-            echo "generate:importmap produced the same file already committed:"
-            echo "no entry was added for the package just installed from a tarball."
-            echo "Register its plugin in test/consumer/src/payload.config.ts, then"
-            echo "rerun 'bunx payload generate:importmap' and commit the result."
-            exit 1
-          fi
+          missing=0
+          for tarball in "${tarballs[@]}"; do
+            name=$(tar -xzOf "$tarball" package/package.json \
+              | node -e 'let s=""; process.stdin.on("data", d => s += d).on("end", () => console.log(JSON.parse(s).name))')
+            if ! grep -rqF -- "$name" src/; then
+              echo "::error::$name was installed from a tarball but nothing under test/consumer/src imports it."
+              echo "The pull request that adds a package registers it in this fixture, otherwise the pack job proves nothing about it."
+              missing=1
+            fi
+          done
+          [ "$missing" -eq 0 ]
 
       - name: Build the consumer
         working-directory: test/consumer

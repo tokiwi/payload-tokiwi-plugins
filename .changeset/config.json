@@ -5,5 +5,5 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["showroom", "test-app"]
+  "privatePackages": { "version": false, "tag": false }
 }

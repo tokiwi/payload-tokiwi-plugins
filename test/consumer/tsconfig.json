@@ -1,3 +1,6 @@
+// This deliberately mirrors tsconfig.base.json by hand rather than extending it: the
+// fixture must resolve exactly like a stranger's project, never through anything above
+// it in this repository. Keep the two in sync when tsconfig.base.json changes.
 {
   "compilerOptions": {
     "target": "ES2022",

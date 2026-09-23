@@ -17,9 +17,29 @@
     "test:int": "vitest run --config test/vitest.config.mts",
     "test:e2e": "playwright test --config test/playwright.config.ts",
     "changeset:version": "changeset version && bun install --lockfile-only",
-    "changeset:publish": "changeset publish"
+    "changeset:publish": "changeset publish",
+    "prepare": "husky"
   },
   "devDependencies": {
-    "typescript": "5.7.3"
+    "@eslint/js": "^9",
+    "eslint": "^9",
+    "eslint-plugin-react-hooks": "^5",
+    "husky": "^9",
+    "lint-staged": "^16",
+    "prettier": "^3",
+    "stylelint": "^16",
+    "stylelint-config-standard-scss": "^14",
+    "typescript": "5.7.3",
+    "typescript-eslint": "^8"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,mjs,json,md}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.scss": [
+      "prettier --write",
+      "stylelint --fix"
+    ]
   }
 }

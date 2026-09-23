@@ -2,7 +2,6 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import react from '@vitejs/plugin-react'
-import tsconfigPaths from 'vite-tsconfig-paths'
 import { defineConfig } from 'vitest/config'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -11,7 +10,7 @@ export default defineConfig({
   // Vitest would otherwise root itself at this file's directory and resolve every
   // glob below inside `test/`.
   root: path.resolve(dirname, '..'),
-  plugins: [tsconfigPaths(), react()],
+  plugins: [react()],
   test: {
     include: [
       // One integration suite per package, plus the application's own. Each

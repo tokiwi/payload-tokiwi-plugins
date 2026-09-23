@@ -46,9 +46,12 @@ removal.
 ## Repository layout
 
 ```
-packages/     one npm package per directory, published independently
-app/          the showroom: a Payload application rendering every package
-test/         one integration suite per package, plus the Next app they run against
+packages/       one npm package per directory, published independently
+app/            the showroom: a Payload application rendering every package
+test/app/       the Next application the integration and end-to-end suites run against
+test/e2e/       the Playwright end-to-end suite
+test/consumer/  the fixture the pack job installs the packed tarballs into
+test/<suite>/   one integration suite per package
 ```
 
 The showroom is where the packages are developed and where they are verified to coexist.
@@ -65,7 +68,7 @@ Requires [bun](https://bun.sh) 1.4.2 and Node 24, both pinned in `.bun-version` 
 ```bash
 bun install
 bun run dev      # starts the showroom against the workspace packages
-bun run build    # typecheck, build the packages, build the showroom
+bun run build    # build the packages, the showroom and the test app, in dependency order
 ```
 
 ## Releasing

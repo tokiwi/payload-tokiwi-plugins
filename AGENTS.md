@@ -31,7 +31,7 @@ Never:
   notes, scratch state: gitignored or kept outside the repository. `CLAUDE.md` and
   `_local/` already are.
 - **Add a package or a feature without a named second consumer.** A package is created
-  when a second *named* project will consume it, and its code is ported from a project
+  when a second _named_ project will consume it, and its code is ported from a project
   already running it in production. Everything else is refused, including "we will surely
   need it".
 - **Ship branding.** Packages carry neutral defaults. Colours, copy and logos are plugin
@@ -53,6 +53,8 @@ packages/<name>/   one npm package, published as @tokiwi/payload-<name>
 app/               the showroom: a Payload application rendering every package
 test/<suite>/      one integration suite per package
 test/app/          the Next application the suites run against
+test/e2e/          the Playwright end-to-end suite, with playwright.config.ts and
+                   vitest.config.mts at the test/ root
 test/consumer/     the fixture CI installs the packed tarballs into
 scripts/           repository tooling, run with bun
 ```

@@ -157,6 +157,24 @@ jobs:
         working-directory: test/consumer
         run: bunx payload generate:importmap
 
+      - name: Verify an installed package registered its admin components
+        working-directory: test/consumer
+        shell: bash
+        run: |
+          shopt -s nullglob
+          tarballs=("$RUNNER_TEMP"/tarballs/*.tgz)
+          if [ ${#tarballs[@]} -eq 0 ]; then
+            echo "No tarball installed; nothing to verify."
+            exit 0
+          fi
+          if git diff --quiet -- 'src/app/(payload)/admin/importMap.js'; then
+            echo "generate:importmap produced the same file already committed:"
+            echo "no entry was added for the package just installed from a tarball."
+            echo "Register its plugin in test/consumer/src/payload.config.ts, then"
+            echo "rerun 'bunx payload generate:importmap' and commit the result."
+            exit 1
+          fi
+
       - name: Build the consumer
         working-directory: test/consumer
         run: bun run build

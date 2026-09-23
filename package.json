@@ -12,7 +12,7 @@
     "test/app"
   ],
   "scripts": {
-    "typecheck": "bun run --filter '*' typecheck",
+    "typecheck": "bun run --filter '*' typecheck && tsc -p test/tsconfig.json",
     "lint": "eslint . && stylelint \"**/*.scss\" --allow-empty-input",
     "build": "bun run --filter '*' build",
     "dev": "bun run --filter showroom dev",

@@ -20,7 +20,7 @@ export default buildConfig({
     locales: ['fr', 'en', 'de'],
     defaultLocale: 'fr',
   },
-  // plugins: [] — the pack job adds the packages under test here, one PR at a time.
+  // The pack job adds the packages under test here, one PR at a time.
   secret: 'consumer-fixture-secret',
   sharp,
 })

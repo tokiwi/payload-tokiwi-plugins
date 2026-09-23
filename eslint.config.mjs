@@ -4,7 +4,7 @@ import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
   {
-    ignores: ['**/dist/**', '**/.next/**', '**/node_modules/**', '_local/**'],
+    ignores: ['**/dist/**', '**/.next/**', '**/node_modules/**', '_local/**', '.superpowers/**'],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,

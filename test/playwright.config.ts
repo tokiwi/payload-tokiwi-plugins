@@ -2,6 +2,7 @@ import { defineConfig, devices } from '@playwright/test'
 
 const PORT = 3001
 const baseURL = `http://127.0.0.1:${PORT}`
+const serve = 'bun run --filter test-app prepare-db && bun run --filter test-app start'
 
 export default defineConfig({
   testDir: './e2e',
@@ -19,8 +20,10 @@ export default defineConfig({
     // that compiles a route, and a production server is what consumers run.
     // prepare-db must run between build and start; see test/app/src/prepare-db.ts
     // for why `next start` alone cannot create the schema.
-    command:
-      'bun run --filter test-app build && bun run --filter test-app prepare-db && bun run --filter test-app start',
+    //
+    // The CI test job already ran `bun run build`; rebuilding here costs a second
+    // full Next build on every matrix leg. Locally nothing has built yet.
+    command: process.env.CI ? serve : `bun run --filter test-app build && ${serve}`,
     // The app serves nothing at `/` (only `/admin` and `/api`), so polling
     // `baseURL` itself 404s forever and the readiness check never succeeds.
     url: `${baseURL}/admin`,

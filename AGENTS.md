@@ -141,7 +141,7 @@ protected so a red pull request cannot merge:
 - **type tests** (tstyche). For a schema-only package the exported types are the product.
   `tsc` proves they compile, not that they are still the right types.
 - build of the showroom (`app/`)
-- integration and end-to-end suites, per package
+- integration suites per package, and the central end-to-end suite
 - **pack and install**: `npm pack` each package, install the tarballs into
   `test/consumer/`, run `generate:importmap` there, build it. This is the only job that
   catches `files`, `exports` and `publishConfig.access`.

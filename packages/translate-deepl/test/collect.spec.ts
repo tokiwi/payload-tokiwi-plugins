@@ -187,11 +187,11 @@ describe('collectLocalizedLeaves', () => {
     }
 
     const byPath = Object.fromEntries(collect(doc).map((leaf) => [leaf.path.join('.'), leaf]))
-    expect(byPath.slug.translatable).toBe(false)
-    expect(byPath['blockBuilder.0.rows.0.columns.0.content.0.items.0.icon'].translatable).toBe(
+    expect(byPath.slug!.translatable).toBe(false)
+    expect(byPath['blockBuilder.0.rows.0.columns.0.content.0.items.0.icon']!.translatable).toBe(
       false,
     )
-    expect(byPath['blockBuilder.0.rows.0.columns.0.content.0.items.0.title'].translatable).toBe(
+    expect(byPath['blockBuilder.0.rows.0.columns.0.content.0.items.0.title']!.translatable).toBe(
       true,
     )
   })
@@ -263,8 +263,8 @@ describe('write-back preserves row identity', () => {
     const next = setAtPath(doc, leaf!.path, 'Team') as typeof doc
 
     const column = (value: typeof doc): unknown[] =>
-      (value.blockBuilder as { rows: { columns: { content: unknown[] }[] }[] }[])[0].rows[0]
-        .columns[0].content
+      (value.blockBuilder as { rows: { columns: { content: unknown[] }[] }[] }[])[0]!.rows[0]!
+        .columns[0]!.content
     expect(column(next)[0]).toBe(column(doc)[0]) // the untouched content block
     expect(column(next)[1]).not.toBe(column(doc)[1]) // the one that was written
     expect(next.title).toBe(doc.title)

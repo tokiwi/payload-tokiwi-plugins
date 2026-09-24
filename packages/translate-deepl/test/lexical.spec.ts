@@ -24,7 +24,7 @@ const paragraph = (...children: unknown[]) => ({ type: 'paragraph', children, ve
 
 /** The text nodes of the first block in a state, for asserting on a round-trip. */
 const runsOf = (value: unknown): Record<string, unknown>[] =>
-  (value as { root: { children: { children: Record<string, unknown>[] }[] } }).root.children[0]
+  (value as { root: { children: { children: Record<string, unknown>[] }[] } }).root.children[0]!
     .children ?? []
 
 describe('extractLexicalStrings', () => {
@@ -40,7 +40,7 @@ describe('extractLexicalStrings', () => {
     )
 
     expect(groups).toHaveLength(1)
-    expect(groups[0].segments.map((segment) => segment.core)).toEqual([
+    expect(groups[0]!.segments.map((segment) => segment.core)).toEqual([
       'Nous utilisons des',
       'méthodes bayésiennes',
       'éprouvées.',
@@ -90,7 +90,10 @@ describe('extractLexicalStrings', () => {
         }),
       ),
     )
-    expect(groups[0].segments.map((segment) => segment.core)).toEqual(['Voir', 'la page recherche'])
+    expect(groups[0]!.segments.map((segment) => segment.core)).toEqual([
+      'Voir',
+      'la page recherche',
+    ])
   })
 
   it('never touches an autolink, whose text is the url itself', () => {
@@ -128,7 +131,7 @@ describe('extractLexicalStrings', () => {
       ),
     )
     expect(groups).toHaveLength(1)
-    expect(groups[0].segments).toHaveLength(2)
+    expect(groups[0]!.segments).toHaveLength(2)
   })
 
   it('skips empty, whitespace-only and letter-free runs', () => {
@@ -183,8 +186,8 @@ describe('applyLexicalStrings', () => {
     // The source run is "Nous utilisons des " — no leading space, one trailing
     // space — so that is the spacing the translation inherits, however DeepL
     // decided to pad its own answer.
-    expect(runsOf(next)[0].text).toBe('We use proven ')
-    expect(runsOf(next)[2].text).toBe(' methods.')
+    expect(runsOf(next)[0]!.text).toBe('We use proven ')
+    expect(runsOf(next)[2]!.text).toBe(' methods.')
   })
 
   it('leaves a group alone when its translation is null, and shares untouched nodes', () => {

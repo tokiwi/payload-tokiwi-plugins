@@ -135,7 +135,8 @@ export const applyLexicalStrings = <T>(
     group.nodePaths.forEach((nodePath, segmentIndex) => {
       const value = translated[segmentIndex]
       if (typeof value !== 'string' || !value.trim()) return
-      const { leading, trailing } = group.segments[segmentIndex]
+      // nodePaths and segments arrays have the same length by LexicalGroup's type contract
+      const { leading, trailing } = group.segments[segmentIndex]!
       writes.push({ path: [...nodePath, 'text'], value: `${leading}${value.trim()}${trailing}` })
     })
   })

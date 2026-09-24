@@ -2,8 +2,8 @@
  * Turning a Lexical editor state into translatable strings, and back.
  *
  * Only a text node's `text` is ever replaced. Everything that carries meaning
- * about how it looks — `format` (the bold/italic bitmask), `style`, `detail`,
- * `mode`, and the `TextStateFeature`'s `$` decoration — travels with the node and
+ * about how it looks: `format` (the bold/italic bitmask), `style`, `detail`,
+ * `mode`, and the `TextStateFeature`'s `$` decoration, travels with the node and
  * is passed through by reference, so formatting cannot drift.
  *
  * Text nodes are grouped by their nearest block-level ancestor so that a sentence
@@ -113,7 +113,7 @@ export const extractLexicalStrings = (state: unknown): LexicalGroup[] => {
 
 /**
  * Writes translated runs back. `translations[i]` holds one string per segment of
- * `groups[i]`, or `null` to leave that group alone — which is how a group whose
+ * `groups[i]`, or `null` to leave that group alone. This is how a group whose
  * tag round-trip failed survives untouched while the rest of the document is still
  * updated.
  *

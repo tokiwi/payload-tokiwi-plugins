@@ -183,8 +183,8 @@ describe('applyLexicalStrings', () => {
     const next = applyLexicalStrings(original, groups, [
       ['  We use proven  ', 'Bayesian', 'methods.'],
     ])
-    // The source run is "Nous utilisons des " — no leading space, one trailing
-    // space — so that is the spacing the translation inherits, however DeepL
+    // The source run is "Nous utilisons des ": no leading space, one trailing
+    // space. This is the spacing the translation inherits, however DeepL
     // decided to pad its own answer.
     expect(runsOf(next)[0]!.text).toBe('We use proven ')
     expect(runsOf(next)[2]!.text).toBe(' methods.')

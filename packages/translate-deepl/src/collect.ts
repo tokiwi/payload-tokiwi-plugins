@@ -85,7 +85,7 @@ const resolveBlock = (
  * marked `localized` under a parent that is already localized is *not* separately
  * localized, because its value already sits inside the parent's per-locale bucket.
  * The flag therefore has to be threaded down the recursion rather than read per
- * field — which is exactly what Payload does in its own `beforeChange` traversal.
+ * field. This is exactly what Payload does in its own `beforeChange` traversal.
  */
 const isEffectivelyLocalized = (field: FlattenedField, parentIsLocalized: boolean): boolean =>
   parentIsLocalized || ('localized' in field && Boolean(field.localized))
@@ -106,7 +106,7 @@ const walk = (
     if (!('name' in field) || !field.name) continue
 
     // A key the document does not carry at all: there is nothing to translate and
-    // nothing to copy. A key holding `null` *is* reported — that is what a read
+    // nothing to copy. A key holding `null` *is* reported. This is what a read
     // with `fallbackLocale: false` returns for an untranslated localized value,
     // and the caller still has to decide what the target locale should end up with.
     if (NEVER_REPORTED.has(field.name)) continue
@@ -115,7 +115,7 @@ const walk = (
     const value = data[field.name]
     const fieldPath: Path = [...path, field.name]
     const localized = isEffectivelyLocalized(field, parentIsLocalized)
-    // Note `field.localized`, not `isEffectivelyLocalized` — matching Payload, a
+    // Note `field.localized`, not `isEffectivelyLocalized`. Matching Payload, a
     // localized container makes its whole subtree per-locale even though its
     // children are not individually localized.
     const childParentIsLocalized =

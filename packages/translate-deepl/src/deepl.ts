@@ -64,7 +64,7 @@ export const buildTranslateUrl = (apiBase: string): string => {
 /**
  * Splits `texts` into requests that respect both of DeepL's limits: at most 50
  * entries, and a body comfortably under the ~128 KiB cap. A single entry larger
- * than the byte budget still gets its own request — the caller has already tried
+ * than the byte budget still gets its own request. The caller has already tried
  * to break it up, and letting DeepL reject it produces a far clearer message than
  * silently dropping it.
  */
@@ -229,7 +229,7 @@ export class DeeplClient {
   }
 
   private async toError(response: Response): Promise<DeeplError> {
-    // The body may carry a `message`, but it may also be HTML from a proxy — never
+    // The body may carry a `message`, but it may also be HTML from a proxy. Never
     // let it grow unbounded into a toast.
     let detail = ''
     try {
@@ -241,7 +241,7 @@ export class DeeplClient {
 
     switch (response.status) {
       case 403:
-        return new DeeplError('DeepL rejected the credentials — check DEEPL_API_KEY.', {
+        return new DeeplError('DeepL rejected the credentials: check DEEPL_API_KEY.', {
           fatal: true,
           status: 403,
         })

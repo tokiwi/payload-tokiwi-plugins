@@ -35,12 +35,25 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
+      # Packages are resolved through their built dist and their exports map, never
+      # through tsconfig paths pointing at src. Building first is therefore mandatory,
+      # or a package import in app/ or test/app/ fails to resolve and typecheck reports
+      # a false TS2307 instead of a real error.
+      - run: bun run build
       - run: bun run typecheck
       - run: bun run lint
 
       # For a schema-only package the exported types are the product, and `tsc` proves
-      # they compile, not that they are still the right types.
-      - run: bun run test:types
+      # they compile, not that they are still the right types. There is no
+      # package yet; the guard disappears on its own once there is one.
+      - name: Type tests
+        run: |
+          if compgen -G "packages/*/" > /dev/null; then
+            bun run test:types
+          else
+            echo "No package yet, so no exported types to test."
+          fi
+        shell: bash
 
       - name: Require a changeset when a package changes
         if: github.event_name == 'pull_request'
@@ -113,22 +126,58 @@ jobs:
       # malformed exports map, a missing 'use client' boundary, a stylesheet left out of
       # `files`, a scoped package still restricted. This job is the only one that sees them.
       - name: Pack every package
+        shell: bash
         run: |
+          shopt -s nullglob
           mkdir -p "$RUNNER_TEMP/tarballs"
-          for dir in packages/*/; do
+          dirs=(packages/*/)
+          if [ ${#dirs[@]} -eq 0 ]; then
+            echo "No package to pack."
+            exit 0
+          fi
+          for dir in "${dirs[@]}"; do
             (cd "$dir" && npm pack --pack-destination "$RUNNER_TEMP/tarballs")
           done
           ls -l "$RUNNER_TEMP/tarballs"
 
       - name: Install the tarballs into the consumer fixture
         working-directory: test/consumer
+        shell: bash
         run: |
+          shopt -s nullglob
           bun install
-          bun add "$RUNNER_TEMP"/tarballs/*.tgz
+          tarballs=("$RUNNER_TEMP"/tarballs/*.tgz)
+          if [ ${#tarballs[@]} -gt 0 ]; then
+            bun add "${tarballs[@]}"
+          else
+            echo "No tarball to install; building the bare fixture."
+          fi
 
       - name: Resolve admin components from the package specifiers
         working-directory: test/consumer
         run: bunx payload generate:importmap
+
+      - name: Verify the fixture actually uses what was installed
+        working-directory: test/consumer
+        shell: bash
+        run: |
+          shopt -s nullglob
+          tarballs=("$RUNNER_TEMP"/tarballs/*.tgz)
+          if [ ${#tarballs[@]} -eq 0 ]; then
+            echo "No tarball installed; nothing to verify."
+            exit 0
+          fi
+          missing=0
+          for tarball in "${tarballs[@]}"; do
+            name=$(tar -xzOf "$tarball" package/package.json \
+              | node -e 'let s=""; process.stdin.on("data", d => s += d).on("end", () => console.log(JSON.parse(s).name))')
+            if ! grep -rqF -- "$name" src/; then
+              echo "::error::$name was installed from a tarball but nothing under test/consumer/src imports it."
+              echo "The pull request that adds a package registers it in this fixture, otherwise the pack job proves nothing about it."
+              missing=1
+            fi
+          done
+          [ "$missing" -eq 0 ]
 
       - name: Build the consumer
         working-directory: test/consumer

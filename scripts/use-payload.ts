@@ -34,6 +34,10 @@ if (!requested) {
 const version = await resolveVersion(requested)
 const manifests = new Bun.Glob('**/package.json').scan({ onlyFiles: true })
 
+// `found` counts every Payload dependency seen, `rewritten` counts manifests actually
+// rewritten. They diverge whenever the workspace already pins the target version: found
+// stays positive while rewritten is zero, which is success, not the tripwire case below.
+let found = 0
 let rewritten = 0
 
 for await (const path of manifests) {
@@ -48,7 +52,9 @@ for await (const path of manifests) {
     if (!deps) continue
 
     for (const name of Object.keys(deps)) {
-      if (!isPayloadPackage(name) || deps[name] === version) continue
+      if (!isPayloadPackage(name)) continue
+      found += 1
+      if (deps[name] === version) continue
       deps[name] = version
       touched.push(name)
     }
@@ -61,8 +67,12 @@ for await (const path of manifests) {
   console.log(`${path}: ${touched.length} dependencies pinned to ${version}`)
 }
 
-if (rewritten === 0) {
+if (found === 0) {
   throw new Error(`No Payload dependency found to pin — the workspace layout changed.`)
 }
 
-console.log(`Pinned Payload ${version} across ${rewritten} manifests.`)
+if (rewritten === 0) {
+  console.log(`${found} Payload dependencies already pinned to ${version}. Nothing to rewrite.`)
+} else {
+  console.log(`Pinned Payload ${version} across ${rewritten} manifests.`)
+}

@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "incremental": true
+  },
+  "include": ["e2e/**/*.ts", "playwright.config.ts", "vitest.config.mts", "*/**/*.int.spec.ts"],
+  "exclude": [
+    "node_modules",
+    // test/app has its own tsconfig, which already covers its src/** and test/**.
+    "app/**",
+    // test/consumer is a hand-copied fixture, checked by its own tsconfig, never this one.
+    "consumer/**"
+  ]
+}

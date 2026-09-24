@@ -1,0 +1,8 @@
+{
+  "extends": "stylelint-config-standard-scss",
+  "ignoreFiles": ["_local/**"],
+  "rules": {
+    "selector-class-pattern": null,
+    "custom-property-pattern": null
+  }
+}

@@ -1,0 +1,27 @@
+// This deliberately mirrors tsconfig.base.json by hand rather than extending it: the
+// fixture must resolve exactly like a stranger's project, never through anything above
+// it in this repository. Keep the two in sync when tsconfig.base.json changes.
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "preserve",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "incremental": true,
+    "plugins": [{ "name": "next" }],
+    "paths": { "@payload-config": ["./src/payload.config.ts"] },
+    // Payload generates `admin/importMap.js`, which the generated route files
+    // import. Without this, `tsc` reports TS7016 on every one of them.
+    "allowJs": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}

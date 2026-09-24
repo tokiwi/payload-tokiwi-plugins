@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "plugins": [{ "name": "next" }],
+    "paths": {
+      "@payload-config": ["./src/payload.config.ts"]
+    },
+    "incremental": true,
+    // Payload generates `admin/importMap.js`, which the generated route files
+    // import. Without this, `tsc` reports TS7016 on every one of them.
+    "allowJs": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}

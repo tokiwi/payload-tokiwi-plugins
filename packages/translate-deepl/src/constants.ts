@@ -66,7 +66,6 @@ export const DEFAULT_SKIP_FIELD_NAMES = [
   'anchor', // URL fragment id
   'url',
   'mailto',
-  'icon', // icon name or identifier
   'width',
   'height',
 ]

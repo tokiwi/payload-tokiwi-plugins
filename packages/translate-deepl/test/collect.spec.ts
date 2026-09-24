@@ -38,7 +38,7 @@ const block = (slug: string, fields: FlattenedField[]): FlattenedBlock =>
   ({ slug, fields, flattenedFields: [...baseBlockFields, ...fields] }) as unknown as FlattenedBlock
 
 const blocks: Record<string, FlattenedBlock> = {
-  // Mirrors src/blocks: the block field itself is never localized, the leaves are.
+  // The block field itself is never localized, the leaves are.
   cardsGrid: block('cardsGrid', [
     text('title', { localized: true }),
     { name: 'columns', type: 'number' } as FlattenedField,
@@ -162,8 +162,8 @@ describe('collectLocalizedLeaves', () => {
   })
 
   it('resolves a block from the registry when the inline blocks array is empty', () => {
-    // Every fixture block uses `blockReferences` with `blocks: []`, exactly as
-    // src/collections/Pages.ts does, so reaching a leaf at all proves this.
+    // Every fixture block uses `blockReferences` with `blocks: []`, so reaching a
+    // leaf at all proves the registry lookup works.
     const doc = { blockBuilder: inColumn({ id: 'c-1', blockType: 'content', richText: {} }) }
     expect(paths(doc)).toHaveLength(1)
   })
@@ -186,7 +186,15 @@ describe('collectLocalizedLeaves', () => {
       }),
     }
 
-    const byPath = Object.fromEntries(collect(doc).map((leaf) => [leaf.path.join('.'), leaf]))
+    const testSkipFieldNames = new Set([...DEFAULT_SKIP_FIELD_NAMES, 'icon'])
+    const byPath = Object.fromEntries(
+      collectLocalizedLeaves({
+        collectionSlug: 'pages',
+        doc,
+        payload,
+        skipFieldNames: testSkipFieldNames,
+      }).map((leaf) => [leaf.path.join('.'), leaf]),
+    )
     expect(byPath.slug!.translatable).toBe(false)
     expect(byPath['blockBuilder.0.rows.0.columns.0.content.0.items.0.icon']!.translatable).toBe(
       false,

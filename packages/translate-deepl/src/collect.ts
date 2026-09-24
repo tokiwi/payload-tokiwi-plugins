@@ -240,8 +240,7 @@ const walk = (
  * Every localized value in `doc`, in field order, deepest-last within each branch.
  *
  * Exported separately from the orchestration so it can be tested against fixture
- * schemas without a database — the pattern `tests/int/searchText.int.spec.ts`
- * established.
+ * schemas without a database.
  */
 export const collectLocalizedLeaves = ({
   collectionSlug,

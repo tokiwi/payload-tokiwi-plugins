@@ -192,3 +192,6 @@ Never:
 - a paragraph where a line does, or a body restating the diff
 
 Changeset summaries follow the same style: they become the published changelog.
+
+A pull request description explains what a reader cannot get from the diff and the
+commit list, and never restates them.

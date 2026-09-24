@@ -10,9 +10,9 @@ import { slugifyPath } from '../src/slugify'
 import { DeeplClient, DeeplError } from '../src/deepl'
 import { translateDocument } from '../src/translateDocument'
 
-// A fake `payload` of spies, in the style of tests/int/searchText.int.spec.ts.
-// No database, and the DeepL client is real but driven by a stubbed fetch, so the
-// batching and the tag round-trip are exercised too.
+// A fake `payload` built entirely from spies, no booted instance and no database.
+// The DeepL client is real but driven by a stubbed fetch, so the batching and the
+// tag round-trip are exercised too.
 
 const text = (name: string, localized = false): FlattenedField =>
   ({ localized, name, type: 'text' }) as FlattenedField

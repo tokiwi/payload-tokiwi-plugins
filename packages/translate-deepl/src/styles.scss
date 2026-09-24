@@ -1,0 +1,33 @@
+/**
+ * Places the Translate item between "Create new" and "Duplicate".
+ *
+ * Payload renders `editMenuItems` last in the document controls popup and offers
+ * no ordering API, but `PopupList.ButtonGroup` is a `flex-direction: column`
+ * container, so `order` is enough. Items that are not named keep `order: 3` and
+ * their source order, which flex preserves for equal values.
+ *
+ * Payload's own rules live in `@layer payload-default`. An unlayered rule such as
+ * this one wins over any layered rule whatever its specificity, so no
+ * `!important` is needed. Keep these rules unlayered.
+ *
+ * The built-in ids are the anchor rather than `#action-duplicate`, because the
+ * duplicate button renders as `#action-duplicate-locales` in its locale-picking
+ * variant and only one of the two is guaranteed to be present.
+ */
+.doc-controls__popup .popup-button-list {
+  > * {
+    order: 3;
+  }
+
+  > #copy-locale-data__button {
+    order: 0;
+  }
+
+  > #action-create {
+    order: 1;
+  }
+
+  > #action-translate-locale {
+    order: 2;
+  }
+}

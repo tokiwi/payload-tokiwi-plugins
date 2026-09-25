@@ -86,6 +86,11 @@ packages, it is extracted then, with real consumers.
 - **Payload is a peer dependency**, `payload@^3.90`, never a direct one, so consumers keep
   a single Payload instance. The floor is deliberate. Raising it is breaking for existing
   consumers, so it is not raised casually.
+- **One `sass` in the workspace**, held by the root `overrides`. `next` takes `sass` as an
+  optional peer, so a second version gives bun two `next` instances, and with them two
+  `@payloadcms/ui` instances: the admin providers write to one React context while the
+  components read another, and every `useConfig()` returns `undefined`. Any build tool
+  `next` lists as an optional peer is the same trap.
 - `files` is restricted to what is published, and `publishConfig.access` is `public`
   (scoped packages are restricted by default and publishing fails without it).
 - A consumer must run `bunx payload generate:importmap` after installing, updating or

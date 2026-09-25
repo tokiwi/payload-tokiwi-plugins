@@ -34,8 +34,8 @@ export const setAtPath = <T>(root: T, path: Path, value: unknown): T => {
   if (path.length === 0) return value as T
   if (root === null || root === undefined || typeof root !== 'object') return root
 
-  // `path.length === 0` already returned above, so a first element always exists;
-  // the cast tells the compiler what the length check already guarantees.
+  // `path.length === 0` already returned above, so a first element always exists.
+  // The cast tells the compiler what the length check already guarantees.
   const [key, ...rest] = path as [number | string, ...Path]
   const container = root as unknown as Record<number | string, unknown>
 

@@ -48,7 +48,7 @@ export class TooManyDocumentsError extends Error {
     readonly found: number,
     readonly max: number,
   ) {
-    super(`Selected ${found} documents; this translates at most ${max} at a time.`)
+    super(`Selected ${found} documents. This translates at most ${max} at a time.`)
     this.name = 'TooManyDocumentsError'
   }
 }

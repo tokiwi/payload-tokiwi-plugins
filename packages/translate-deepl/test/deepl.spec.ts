@@ -180,7 +180,7 @@ describe('DeeplClient', () => {
     )
 
     // The upstream body is echoed, so a 400 is the one place the key could come
-    // back out; the client must not add it, and must not be asked to trust it.
+    // back out. The client must not add it, and must not be asked to trust it.
     expect(error.status).toBe(400)
   })
 

@@ -36,7 +36,7 @@ export const readNdjson = async <T>(
         try {
           onEvent(JSON.parse(line) as T)
         } catch {
-          /* not our line; the run is still fine */
+          /* not our line. The run is still fine */
         }
       }
       newline = buffer.indexOf('\n')

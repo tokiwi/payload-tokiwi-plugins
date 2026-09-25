@@ -19,7 +19,7 @@ const textarea = (name: string, opts: Loc = {}): FlattenedField =>
 const richText = (name: string, opts: Loc = {}): FlattenedField =>
   ({ name, type: 'richText', ...opts }) as FlattenedField
 
-/** Payload injects both of these into every block row; neither is prose. */
+/** Payload injects both of these into every block row. Neither is prose. */
 const baseBlockFields: FlattenedField[] = [text('id'), text('blockName')]
 
 const blocksField = (name: string, ...refs: string[]): FlattenedField =>
@@ -157,7 +157,7 @@ describe('collectLocalizedLeaves', () => {
       }),
     }
 
-    // `title` is localized in its own right; `image` is not and is left alone.
+    // `title` is localized in its own right. `image` is not and is left alone.
     expect(paths(doc)).toEqual(['blockBuilder.0.rows.0.columns.0.content.0.items.0.title'])
   })
 

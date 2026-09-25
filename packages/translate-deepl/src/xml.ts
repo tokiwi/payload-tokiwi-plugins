@@ -91,7 +91,7 @@ export const buildTaggedText = (segments: TaggedSegment[]): string =>
     )
     .join('')
 
-/** Matches both quoting styles; DeepL echoes attributes verbatim but has no contract to. */
+/** Matches both quoting styles. DeepL echoes attributes verbatim but has no contract to. */
 const TAG_PATTERN = /<s\s+i=["'](\d+)["']\s*>([\s\S]*?)<\/s\s*>/g
 
 /**

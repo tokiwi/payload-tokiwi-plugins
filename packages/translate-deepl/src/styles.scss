@@ -31,3 +31,55 @@
     order: 2;
   }
 }
+
+.deepl-translate {
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--base) * 0.5);
+    padding: var(--base) 0;
+  }
+
+  &__notice {
+    color: var(--theme-elevation-600);
+    font-size: 0.9em;
+  }
+
+  &__warning {
+    color: var(--theme-warning-600, var(--theme-elevation-800));
+  }
+
+  &__actions {
+    display: flex;
+    gap: calc(var(--base) * 0.5);
+    justify-content: flex-end;
+  }
+
+  &__progress {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--base) * 0.25);
+  }
+
+  &__progress-track {
+    background: var(--theme-elevation-100);
+    border-radius: var(--style-radius-s);
+    height: 6px;
+    overflow: hidden;
+  }
+
+  &__progress-fill {
+    background: var(--theme-success-500, var(--theme-elevation-800));
+    height: 100%;
+
+    /* The bar only ever advances, so a plain width transition reads as motion
+       rather than as the jitter an indeterminate spinner would give. */
+    transition: width 200ms ease-out;
+  }
+
+  &__progress-label {
+    color: var(--theme-elevation-600);
+    font-size: 0.9em;
+    margin: 0;
+  }
+}

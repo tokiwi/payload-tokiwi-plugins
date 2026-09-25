@@ -174,8 +174,9 @@ describe('reading both locales', () => {
     await run()
 
     // Payload treats an omitted *or* null fallback as "use the configured one",
-    // and this project leaves it on: without `false`, reading the English locale
-    // hands back the French text and the translation becomes a no-op round trip.
+    // and a config that leaves it on means that without `false`, reading the
+    // English locale hands back the French text and the translation becomes a
+    // no-op round trip.
     for (const call of findByID.mock.calls) {
       expect(call[0].fallbackLocale).toBe(false)
     }
@@ -261,6 +262,11 @@ describe('writing the target locale', () => {
     expect(data.id).toBeUndefined()
     expect(data.createdAt).toBeUndefined()
     expect(data.updatedAt).toBeUndefined()
+  })
+
+  it('marks the write with the plugin context too, so a beforeChange hook can stand aside', async () => {
+    await run()
+    expect(callArgs(update).context).toMatchObject({ deeplTranslate: true })
   })
 
   it('translates the title and the rich text runs', async () => {

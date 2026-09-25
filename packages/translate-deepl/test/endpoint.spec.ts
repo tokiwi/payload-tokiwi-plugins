@@ -41,7 +41,7 @@ let gate: (() => void) | undefined
 // fake request is a real one with the Payload extras hung off it.
 const makeReq = (): PayloadRequest =>
   Object.assign(
-    new Request('http://localhost/api/deepl-translate/pages', {
+    new Request('http://localhost/api/translate/deepl/pages', {
       body: JSON.stringify({ overwrite: true, sourceLocale: 'fr', targetLocale: 'en' }),
       headers: { 'content-type': 'application/json' },
       method: 'POST',

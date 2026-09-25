@@ -90,7 +90,9 @@ packages, it is extracted then, with real consumers.
   optional peer, so a second version gives bun two `next` instances, and with them two
   `@payloadcms/ui` instances: the admin providers write to one React context while the
   components read another, and every `useConfig()` returns `undefined`. Any build tool
-  `next` lists as an optional peer is the same trap.
+  `next` lists as an optional peer is the same trap. The override supersedes
+  `@payloadcms/next`'s own exact `sass: 1.77.4` dependency, and does not reach a consumer:
+  their install is not a workspace member, so it resolves that pin normally.
 - `files` is restricted to what is published, and `publishConfig.access` is `public`
   (scoped packages are restricted by default and publishing fails without it).
 - A consumer must run `bunx payload generate:importmap` after installing, updating or

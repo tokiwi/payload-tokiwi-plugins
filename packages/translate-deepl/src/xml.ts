@@ -60,7 +60,7 @@ export const unescapeXml = (input: string): string =>
 
 /**
  * Splits a text node's value into the whitespace we keep and the text we send.
- * DeepL normalises whitespace next to a tag, and the corpus has runs whose
+ * DeepL normalises whitespace next to a tag, and real content has runs whose
  * trailing double space is the only thing separating two sentences, so it never
  * goes inside the tag.
  *

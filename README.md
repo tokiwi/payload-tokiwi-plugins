@@ -4,7 +4,7 @@ Shared [Payload CMS 3](https://payloadcms.com) plugins used across Tokiwi projec
 developed together in one repository and published independently to npm under the
 `@tokiwi` scope.
 
-> Status: bootstrapping. No package is published yet.
+> Status: the first package is landing. Nothing is published to npm yet.
 
 ## Why this repo exists
 
@@ -16,7 +16,7 @@ The goal is that starting a Payload project means installing a few versioned pac
 rather than copying code:
 
 ```bash
-bun add @tokiwi/payload-theme
+bun add @tokiwi/payload-translate-deepl
 ```
 
 Each package is independent. Installing one never pulls in the others.
@@ -26,10 +26,10 @@ Each package is independent. Installing one never pulls in the others.
 Install it, register it in `payload.config.ts`, then regenerate Payload's import map:
 
 ```ts
-import { tokiwiTheme } from '@tokiwi/payload-theme'
+import { deeplTranslatePlugin } from '@tokiwi/payload-translate-deepl'
 
 export default buildConfig({
-  plugins: [tokiwiTheme({ siteName: 'Example' })],
+  plugins: [deeplTranslatePlugin()],
 })
 ```
 
@@ -42,6 +42,12 @@ bunx payload generate:types       # any package adding fields or collections
 and is never regenerated at runtime or during a production build. Skipping it leaves
 components silently missing from the admin panel. Re-run it after every install, update or
 removal.
+
+## Packages
+
+| package                                                       |                                                                           |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| [`@tokiwi/payload-translate-deepl`](packages/translate-deepl) | Translate a document into another locale with DeepL, from the admin panel |
 
 ## Repository layout
 

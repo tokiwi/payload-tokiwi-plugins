@@ -104,6 +104,7 @@ describe('choosing collections', () => {
   })
 
   it('is idempotent: a second application changes nothing', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const config = build([
       collection('pages', [
         { localized: true, name: 'title', type: 'text' },
@@ -115,6 +116,7 @@ describe('choosing collections', () => {
     expect(twice).toBe(once)
     expect(menuItems(twice, 'pages')).toHaveLength(1)
     expect(twice.endpoints).toHaveLength(2)
+    warn.mockRestore()
   })
 
   it('warns when a second application is ignored, rather than dropping it silently', async () => {

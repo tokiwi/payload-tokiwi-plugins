@@ -29,10 +29,14 @@ const apply = async (options: DeeplTranslatePluginConfig, config: Config): Promi
 
 describe('the config transformer', () => {
   it('is idempotent: applying it twice registers one menu item, not two', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const once = await apply(credentials, baseConfig())
     const twice = await apply(credentials, once)
 
+    expect(twice).toBe(once)
     expect(twice.collections?.[0]?.admin?.components?.edit?.editMenuItems).toHaveLength(1)
+    expect(twice.endpoints).toHaveLength(2)
+    warn.mockRestore()
   })
 
   it('is a strict no-op when disabled, down to the object identity', async () => {

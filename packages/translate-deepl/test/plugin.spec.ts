@@ -102,6 +102,20 @@ describe('choosing collections', () => {
     expect(pages?.admin?.components?.edit?.editMenuItems).toHaveLength(2)
     expect(pages?.admin?.components?.listMenuItems).toHaveLength(2)
   })
+
+  it('is idempotent: a second application changes nothing', async () => {
+    const config = build([
+      collection('pages', [
+        { localized: true, name: 'title', type: 'text' },
+      ] as CollectionConfig['fields']),
+    ])
+    const once = await apply(credentials, config)
+    const twice = await apply(credentials, once)
+
+    expect(twice).toBe(once)
+    expect(menuItems(twice, 'pages')).toHaveLength(1)
+    expect(twice.endpoints).toHaveLength(2)
+  })
 })
 
 describe('missing credentials', () => {

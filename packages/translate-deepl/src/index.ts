@@ -17,6 +17,7 @@ import {
   DEFAULT_BULK_BUDGET_MS,
   DEFAULT_MAX_DOCUMENTS,
   DEFAULT_SKIP_FIELD_NAMES,
+  ENDPOINT_PATH,
   LIST_COMPONENT_EXPORT,
   LIST_COMPONENT_PATH,
 } from './constants'
@@ -150,6 +151,14 @@ export const deeplTranslatePlugin =
     if (options.disabled || !config.localization || config.localization.locales.length < 2) {
       return config
     }
+
+    // Applying the same plugin twice must not register a second menu item or a
+    // second copy of each route. A starter that ships a preset plugin list and a
+    // project that adds this plugin on top is how that happens.
+    const alreadyApplied = (config.endpoints ?? []).some(
+      (endpoint) => endpoint.path === ENDPOINT_PATH && endpoint.method === 'post',
+    )
+    if (alreadyApplied) return config
 
     // Without credentials every click would end in the same error, so the action
     // is left out entirely rather than offered and then refused. Said out loud:

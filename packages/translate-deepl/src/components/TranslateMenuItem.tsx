@@ -4,7 +4,7 @@
  * "Translate to new language" in the document controls popup.
  *
  * Payload renders `editMenuItems` last and offers no ordering API, so
- * `order.scss` moves it up between "Create new" and "Duplicate".
+ * `styles.scss` moves it up between "Create new" and "Duplicate".
  */
 
 import {

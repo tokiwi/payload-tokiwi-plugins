@@ -1,4 +1,4 @@
-import type { FlattenedField, Payload, PayloadRequest } from 'payload'
+import type { CollectionConfig, Config, FlattenedField, Payload, PayloadRequest } from 'payload'
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -7,6 +7,7 @@ import type { BulkProgressEvent, ResolvedPluginConfig } from '../src/types'
 import { DEFAULT_SKIP_FIELD_NAMES } from '../src/constants'
 import { slugifyPath } from '../src/slugify'
 import { buildTranslateEndpoints } from '../src/endpoint'
+import { deeplTranslatePlugin } from '../src/index'
 import { readNdjson } from '../src/ndjson'
 
 // Drives the real endpoint handler with a fake `payload` and a stubbed global
@@ -216,5 +217,75 @@ describe('the single-document endpoint', () => {
       message: expect.stringContaining('"de"'),
       status: 502,
     })
+  })
+})
+
+describe('addSkipFieldNames', () => {
+  // The resolved config is not exported, so this drives the plugin the way a
+  // consumer would: apply it to a raw config, then take the real handler off the
+  // config it returns. That is the only way to prove the option reaches the field
+  // walk rather than merely being accepted.
+  it('protects the added field while still sending the rest to DeepL', async () => {
+    const rawConfig = {
+      collections: [
+        {
+          fields: [
+            { localized: true, name: 'title', type: 'text' },
+            { localized: true, name: 'reference', type: 'text' },
+          ],
+          slug: 'pages',
+        } as CollectionConfig,
+      ],
+      localization: { defaultLocale: 'fr', locales: ['fr', 'en'] },
+    } as unknown as Config
+
+    const next = await deeplTranslatePlugin({
+      apiBase: 'https://api-free.deepl.com',
+      apiKey: 'key:fx',
+      addSkipFieldNames: ['reference'],
+    })(rawConfig)
+
+    const singleEndpoint = next.endpoints![0]!
+
+    const req = Object.assign(
+      new Request('http://localhost/api/translate/deepl/pages/1', {
+        body: JSON.stringify({ overwrite: true, sourceLocale: 'fr', targetLocale: 'en' }),
+        headers: { 'content-type': 'application/json' },
+        method: 'POST',
+      }),
+      {
+        payload: {
+          blocks: {},
+          collections: {
+            pages: {
+              config: {
+                flattenedFields: [text('title', true), text('reference', true)],
+              },
+            },
+          },
+          config: { localization: { localeCodes: ['fr', 'en'] } },
+          findByID: async ({ locale }: { locale: string }) =>
+            locale === 'fr'
+              ? { id: 1, reference: 'Référence protégée', title: 'Titre traduisible' }
+              : { id: 1, reference: null, title: null },
+          update: async ({ id }: { id: number }) => ({ id }),
+        } as unknown as Payload,
+        routeParams: { collection: 'pages', id: '1' },
+        user: { collection: 'users', id: 1 },
+      },
+    ) as unknown as PayloadRequest
+
+    await singleEndpoint.handler(req)
+
+    expect(fetch).toHaveBeenCalled()
+
+    const sentTexts = (fetch as unknown as { mock: { calls: [unknown, RequestInit][] } }).mock.calls
+      .map(([, init]) => JSON.parse(init.body as string) as { text: string[] })
+      .flatMap((body) => body.text)
+
+    // The added skip field never leaves the process, unbilled and untranslated.
+    expect(sentTexts).not.toContain('Référence protégée')
+    // The union still lets the rest of the document through.
+    expect(sentTexts).toContain('Titre traduisible')
   })
 })

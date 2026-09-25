@@ -25,12 +25,15 @@ test.describe('translate with deepl', () => {
     await page.getByRole('button', { name: 'Translate' }).click()
 
     // The component redirects to the target locale once the endpoint answers.
-    await page.waitForURL('**/locale=en')
+    // A regex, not a glob: Playwright compiles `**/` to "anything, then a slash",
+    // and the locale arrives on the query string.
+    await page.waitForURL(/\?locale=en$/)
 
     await expect(page.locator('#field-title')).toHaveValue(/^EN: /)
     // The bold run came back attached to its own word, which is what the tag
-    // protocol is for: three runs in, three runs out, each prefixed.
-    await expect(page.locator('#field-body')).toContainText('EN: bayésiennes')
+    // protocol is for: three runs in, three runs out, each prefixed. The lexical
+    // field carries no `field-<name>` id, only a `data-field-path`.
+    await expect(page.locator('[data-field-path="body"]')).toContainText('EN: bayésiennes')
     // `url` is in the default skip list and is not localized, so it never moved.
     await expect(page.locator('#field-url')).toHaveValue('https://example.test/bonjour')
   })

@@ -6,6 +6,8 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { buildConfig } from 'payload'
 import sharp from 'sharp'
 
+import { deeplTranslatePlugin } from '@tokiwi/payload-translate-deepl'
+
 import { Pages } from './collections/Pages'
 import { Users } from './collections/Users'
 
@@ -22,6 +24,7 @@ export default buildConfig({
   },
   // The pull request adding a package registers its plugin here. The pack job does
   // not edit this file: it fails if the new package is not wired in.
+  plugins: [deeplTranslatePlugin({ apiBase: 'https://api-free.deepl.com', apiKey: 'fixture:fx' })],
   secret: 'consumer-fixture-secret',
   sharp,
 })

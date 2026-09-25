@@ -6,6 +6,8 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { buildConfig } from 'payload'
 import sharp from 'sharp'
 
+import { deeplTranslatePlugin } from '@tokiwi/payload-translate-deepl'
+
 import { Pages } from './collections/Pages'
 import { Users } from './collections/Users'
 
@@ -22,6 +24,12 @@ export default buildConfig({
     locales: ['fr', 'en', 'de'],
     defaultLocale: 'fr',
   },
+  plugins: [
+    // The showroom is what a human opens to see the plugins side by side, so the
+    // credentials come from the environment and the actions are simply absent
+    // until someone sets them.
+    deeplTranslatePlugin(),
+  ],
   secret: process.env.PAYLOAD_SECRET || 'showroom-development-secret',
   sharp,
   typescript: { outputFile: path.resolve(dirname, 'payload-types.ts') },

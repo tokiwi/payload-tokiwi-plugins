@@ -23,6 +23,82 @@ export const seed = async (payload: Payload): Promise<void> => {
         slug: 'bonjour-le-monde',
         summary: 'Un résumé court.',
         url: 'https://example.test/bonjour',
+        body: {
+          root: {
+            type: 'root',
+            direction: 'ltr',
+            format: '',
+            indent: 0,
+            version: 1,
+            children: [
+              {
+                type: 'paragraph',
+                version: 1,
+                children: [
+                  {
+                    type: 'text',
+                    detail: 0,
+                    format: 0,
+                    mode: 'normal',
+                    style: '',
+                    text: 'Nous utilisons des méthodes ',
+                    version: 1,
+                  },
+                  {
+                    type: 'text',
+                    detail: 0,
+                    format: 1,
+                    mode: 'normal',
+                    style: '',
+                    text: 'bayésiennes',
+                    version: 1,
+                  },
+                  {
+                    type: 'text',
+                    detail: 0,
+                    format: 0,
+                    mode: 'normal',
+                    style: '',
+                    text: ' au quotidien.',
+                    version: 1,
+                  },
+                ],
+              },
+            ],
+          },
+        },
+        sections: [
+          {
+            blockType: 'callout',
+            heading: 'Un encadré',
+            text: {
+              root: {
+                type: 'root',
+                direction: 'ltr',
+                format: '',
+                indent: 0,
+                version: 1,
+                children: [
+                  {
+                    type: 'paragraph',
+                    version: 1,
+                    children: [
+                      {
+                        type: 'text',
+                        detail: 0,
+                        format: 0,
+                        mode: 'normal',
+                        style: '',
+                        text: 'Texte imbriqué.',
+                        version: 1,
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+        ],
       },
     })
   }

@@ -62,7 +62,7 @@ test/<suite>/   one integration suite per package
 
 The showroom is where the packages are developed and where they are verified to coexist.
 CI builds it, runs the suites, then packs every package and installs the tarballs into a
-scratch application — that last step is what catches a broken `exports` map.
+scratch application: that last step is what catches a broken `exports` map.
 
 Conventions are in [`AGENTS.md`](AGENTS.md), which is binding for humans and agents alike.
 
@@ -80,7 +80,7 @@ bun run build    # build the packages, the showroom and the test app, in depende
 ## Releasing
 
 Versioning and publishing are handled by [changesets](https://github.com/changesets/changesets).
-A pull request that changes a package includes a changeset describing the bump; merging to
+A pull request that changes a package includes a changeset describing the bump. Merging to
 `main` opens a release pull request, and merging that one publishes to npm.
 
 npm versions are immutable and cannot be replaced, which is why publishing is gated behind

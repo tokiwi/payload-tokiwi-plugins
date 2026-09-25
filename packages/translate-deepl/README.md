@@ -1,4 +1,4 @@
-# deepl-translate
+# @tokiwi/payload-translate-deepl
 
 Adds a **Translate to new language** action to the document edit view. It reads the
 document in the locale you are editing, sends every localized string and rich-text

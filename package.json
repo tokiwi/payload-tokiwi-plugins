@@ -18,6 +18,7 @@
     "dev": "bun run --filter showroom dev",
     "test:int": "vitest run --config test/vitest.config.mts",
     "test:e2e": "playwright test --config test/playwright.config.ts",
+    "test:types": "tstyche",
     "changeset:version": "changeset version && bun install --lockfile-only",
     "changeset:publish": "changeset publish",
     "prepare": "husky"
@@ -39,6 +40,7 @@
     "prettier": "^3",
     "stylelint": "^16",
     "stylelint-config-standard-scss": "^14",
+    "tstyche": "^4",
     "typescript": "5.7.3",
     "typescript-eslint": "^8",
     "vitest": "^3"

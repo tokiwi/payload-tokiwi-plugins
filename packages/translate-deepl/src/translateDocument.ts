@@ -281,7 +281,7 @@ export const translateDocument = async ({
       }
 
       // A single run needs no tags: no XML to build, nothing to parse, and no way
-      // for the round-trip to fail. This is the common case in the real corpus.
+      // for the round-trip to fail. This is the common case in practice.
       if (group.segments.length === 1) {
         // `length === 1` was just checked, so index 0 exists.
         plainJobs.push(buildRawJob(group.segments[0]!, (value) => assign([value])))

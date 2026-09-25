@@ -42,7 +42,9 @@ DEEPL_API_KEY=...                           # a free key ends in ":fx"
 
 The plugin removes itself, with one line on stderr, when the credentials are
 missing. It also removes itself, silently, when the config has no localization or
-has a single locale: there is nothing to translate between.
+has a single locale: there is nothing to translate between. The same happens,
+silently, when no collection has a localized field or `collections` names none of
+them, and, with a warning, when the plugin is already registered on the config.
 
 ## Translating several documents
 
@@ -65,21 +67,22 @@ permission) are ordinary error responses.
 
 ## Options
 
-| option                    | default                                                                 |                                                            |
-| ------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------- |
-| `collections`             | every collection with a localized field                                 | which collections get the action                           |
-| `slugMode`                | `'translate'`                                                           | what to write when a slug may be replaced (see below)      |
-| `placeholderSlug`         | `/^untitled(-\d+)?$/i`                                                  | which existing slugs count as replaceable                  |
-| `normalizeSlug`           | built-in slugifier                                                      | how a translated slug is normalised                        |
-| `skipFieldNames`          | `id`, `blockName`, `slug`, `anchor`, `url`, `mailto`, `width`, `height` | replaces the list of field names never sent to DeepL       |
-| `addSkipFieldNames`       | none                                                                    | adds to the list in effect rather than replacing it        |
-| `localeMap`               | fr, en, de, es, it, nl, pt                                              | Payload locale → DeepL `source_lang` / `target_lang`       |
-| `formality`, `glossaryId` | none                                                                    | passed straight through to DeepL                           |
-| `budgetMs`                | `90_000`                                                                | per document: after this, stop and save what is translated |
-| `bulkBudgetMs`            | `1_800_000`                                                             | whole bulk run, shared across its documents                |
-| `maxDocuments`            | `0` (no cap)                                                            | set a positive number to refuse larger selections          |
-| `apiBase`, `apiKey`       | the env vars                                                            | for tests, or several DeepL accounts                       |
-| `disabled`                | `false`                                                                 | keep it registered but inert                               |
+| option                    | default                                                                 |                                                                       |
+| ------------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `collections`             | every collection with a localized field                                 | which collections get the action                                      |
+| `slugMode`                | `'translate'`                                                           | what to write when a slug may be replaced (see below)                 |
+| `placeholderSlug`         | `/^untitled(-\d+)?$/i`                                                  | which existing slugs count as replaceable                             |
+| `normalizeSlug`           | built-in slugifier                                                      | how a translated slug is normalised                                   |
+| `slugFieldNames`          | `['slug']`                                                              | which field names follow the slug rule rather than the translate rule |
+| `skipFieldNames`          | `id`, `blockName`, `slug`, `anchor`, `url`, `mailto`, `width`, `height` | replaces the list of field names never sent to DeepL                  |
+| `addSkipFieldNames`       | none                                                                    | adds to the list in effect rather than replacing it                   |
+| `localeMap`               | fr, en, de, es, it, nl, pt                                              | Payload locale → DeepL `source_lang` / `target_lang`                  |
+| `formality`, `glossaryId` | none                                                                    | passed straight through to DeepL                                      |
+| `budgetMs`                | `90_000`                                                                | per document: after this, stop and save what is translated            |
+| `bulkBudgetMs`            | `1_800_000`                                                             | whole bulk run, shared across its documents                           |
+| `maxDocuments`            | `0` (no cap)                                                            | set a positive number to refuse larger selections                     |
+| `apiBase`, `apiKey`       | the env vars                                                            | for tests, or several DeepL accounts                                  |
+| `disabled`                | `false`                                                                 | keep it registered but inert                                          |
 
 ### Slugs
 

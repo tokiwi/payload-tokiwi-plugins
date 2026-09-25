@@ -118,8 +118,9 @@ export const extractLexicalStrings = (state: unknown): LexicalGroup[] => {
  * updated.
  *
  * The translated run is trimmed and the *source* node's leading and trailing
- * whitespace reattached: DeepL renormalises whitespace next to a tag, and the
- * corpus relies on those runs to separate two sentences inside one paragraph.
+ * whitespace reattached: DeepL renormalises whitespace next to a tag, and real
+ * content has runs whose trailing double space is the only thing separating two
+ * sentences inside one paragraph.
  */
 export const applyLexicalStrings = <T>(
   state: T,

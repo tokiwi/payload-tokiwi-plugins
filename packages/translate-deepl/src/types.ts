@@ -73,7 +73,7 @@ export type DeeplTranslatePluginConfig = {
   glossaryId?: string
   /** Overall time budget for one translate, in ms. Default 90_000. */
   budgetMs?: number
-  /** Time budget for a whole bulk run, in ms. Default 300_000. */
+  /** Time budget for a whole bulk run, in ms. Default 1_800_000. */
   bulkBudgetMs?: number
   /** Cap on how many documents one bulk run accepts. `0` (the default) is no cap. */
   maxDocuments?: number

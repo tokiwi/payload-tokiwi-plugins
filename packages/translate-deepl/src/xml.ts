@@ -48,11 +48,11 @@ export const unescapeXml = (input: string): string =>
   input.replace(/&(#x[0-9a-fA-F]+|#\d+|[a-zA-Z]+);/g, (match, entity: string) => {
     if (entity.startsWith('#x') || entity.startsWith('#X')) {
       const code = Number.parseInt(entity.slice(2), 16)
-      return Number.isFinite(code) ? String.fromCodePoint(code) : match
+      return code >= 0 && code <= 0x10ffff ? String.fromCodePoint(code) : match
     }
     if (entity.startsWith('#')) {
       const code = Number.parseInt(entity.slice(1), 10)
-      return Number.isFinite(code) ? String.fromCodePoint(code) : match
+      return code >= 0 && code <= 0x10ffff ? String.fromCodePoint(code) : match
     }
     const named = NAMED_ENTITIES[entity.toLowerCase()]
     return named ?? match
@@ -72,7 +72,7 @@ export const splitSegment = (text: string): TaggedSegment | null => {
   if (!text) return null
   const match = /^(\s*)([\s\S]*?)(\s*)$/.exec(text)
   if (!match) return null
-  // The regex's three groups always participate, even for an empty match; the
+  // The regex's three groups always participate, even for an empty match. The
   // defaults are only to satisfy the compiler about `RegExpExecArray` indexing.
   const [, leading = '', core, trailing = ''] = match
   if (!core) return null
@@ -128,13 +128,10 @@ export const parseTaggedText = (response: string, expected: number): ParseResult
   }
   outside += response.slice(cursor)
 
+  // An `<s>` with no closing tag never matches `TAG_PATTERN`, so it lands here as
+  // ordinary text and is caught by the same check as any other stray character.
   if (/\S/.test(outside)) {
     return { ok: false, reason: 'text outside the tags' }
-  }
-  // An `<s>` with no closing tag never matches, so it lands in `outside` and is
-  // caught above, unless it was the very last thing and contained no text.
-  if (/<\/?s[\s>]/.test(outside)) {
-    return { ok: false, reason: 'unbalanced tags' }
   }
 
   const values: string[] = []

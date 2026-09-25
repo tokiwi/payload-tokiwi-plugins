@@ -2,11 +2,11 @@
  * Finding every localized value in a document, by walking the collection's own
  * field schema rather than guessing at the shape of the data.
  *
- * Three decisions are load-bearing: walk `flattenedFields`, so `row`,
+ * Three decisions are load-bearing. Walk `flattenedFields`, so `row`,
  * `collapsible` and unnamed `tabs` are already merged into their parent and `ui`
- * fields are gone; resolve a block row's config from the `payload.blocks` registry,
+ * fields are gone. Resolve a block row's config from the `payload.blocks` registry,
  * because a project declaring blocks through `blockReferences` has an empty inline
- * `blocks: []`; and skip a `blockType` that is no longer in the config instead of
+ * `blocks: []`. And skip a `blockType` that is no longer in the config instead of
  * throwing, because stale rows survive in stored JSON.
  *
  * It records paths rather than flattening to strings, it reports only *localized*
@@ -200,7 +200,7 @@ const walk = (
         if (!localized) break
         const translatable = !skipFieldNames.has(field.name)
         if (Array.isArray(value)) {
-          // `hasMany` text stores an array of strings; each entry is its own path.
+          // `hasMany` text stores an array of strings. Each entry is its own path.
           for (let index = 0; index < value.length; index++) {
             if (typeof value[index] !== 'string') continue
             out.push({

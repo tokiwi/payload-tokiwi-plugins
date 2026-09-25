@@ -44,6 +44,11 @@ describe('escaping', () => {
   it('decodes the entities DeepL introduces on its own', () => {
     expect(unescapeXml('&quot;oui&quot; &#39;non&#39; &#x2014;')).toBe('"oui" \'non\' —')
   })
+
+  it('leaves a numeric entity above the Unicode range as-is rather than throwing', () => {
+    expect(() => unescapeXml('&#xFFFFFFFF;')).not.toThrow()
+    expect(unescapeXml('&#xFFFFFFFF;')).toBe('&#xFFFFFFFF;')
+  })
 })
 
 describe('parseTaggedText', () => {

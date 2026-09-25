@@ -20,6 +20,7 @@ import {
   ENDPOINT_PATH,
   LIST_COMPONENT_EXPORT,
   LIST_COMPONENT_PATH,
+  MAX_DEPTH,
 } from './constants'
 import { buildTranslateEndpoints } from './endpoint'
 import { DEFAULT_PLACEHOLDER_SLUG, isPlaceholderSlug, slugifyPath } from './slugify'
@@ -49,7 +50,7 @@ const DEFAULT_LOCALE_MAP: Record<string, DeeplLanguagePair> = {
  * through `blockReferences` are the reason the block registry is consulted too.
  */
 const hasLocalizedField = (fields: Field[], blocks: Config['blocks'], depth = 0): boolean => {
-  if (depth > 25) return false
+  if (depth > MAX_DEPTH) return false
 
   return fields.some((field) => {
     if ('localized' in field && field.localized) return true

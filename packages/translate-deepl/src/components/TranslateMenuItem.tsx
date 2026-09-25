@@ -33,7 +33,7 @@ export type TranslateMenuItemProps = {
 export const TranslateMenuItem: React.FC<TranslateMenuItemProps> = ({ collectionSlug }) => {
   const { config } = useConfig()
   const { code: currentLocale } = useLocale()
-  const { id, collectionSlug: infoSlug, docConfig, hasPublishedDoc } = useDocumentInfo()
+  const { id, docConfig, hasPublishedDoc } = useDocumentInfo()
   const { closeModal, openModal } = useModal()
   const { startRouteTransition } = useRouteTransition()
   const modified = useFormModified()
@@ -43,7 +43,7 @@ export const TranslateMenuItem: React.FC<TranslateMenuItemProps> = ({ collection
 
   const [running, setRunning] = useState(false)
 
-  const slug = collectionSlug ?? infoSlug
+  const slug = collectionSlug
   // One modal slug per document, so two edit views open in the same session
   // cannot toggle each other's drawer.
   const drawerSlug = `${baseClass}-${slug}-${String(id ?? 'new')}`
@@ -128,7 +128,7 @@ export const TranslateMenuItem: React.FC<TranslateMenuItemProps> = ({ collection
     ],
   )
 
-  // Nothing to translate into, or nothing to translate yet.
+  // Nothing to translate yet.
   if (!id) return null
 
   return (

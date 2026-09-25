@@ -25,10 +25,16 @@ export default buildConfig({
     defaultLocale: 'fr',
   },
   plugins: [
-    // The showroom is what a human opens to see the plugins side by side, so the
-    // credentials come from the environment and the actions are simply absent
-    // until someone sets them.
-    deeplTranslatePlugin(),
+    // The showroom exists to render every package, so the actions are always
+    // registered: a real key in the environment makes them work end to end, and
+    // the placeholder below still renders the menu items, the drawer and the
+    // locale picker, which is what someone opening the showroom came to see. It
+    // also keeps `generate:importmap` reproducible, since the committed import
+    // map must not depend on who ran it.
+    deeplTranslatePlugin({
+      apiBase: process.env.DEEPL_API_BASE || 'https://api-free.deepl.com',
+      apiKey: process.env.DEEPL_API_KEY || 'showroom-placeholder:fx',
+    }),
   ],
   secret: process.env.PAYLOAD_SECRET || 'showroom-development-secret',
   sharp,

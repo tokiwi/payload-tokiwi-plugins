@@ -158,7 +158,12 @@ export const deeplTranslatePlugin =
     const alreadyApplied = (config.endpoints ?? []).some(
       (endpoint) => endpoint.path === ENDPOINT_PATH && endpoint.method === 'post',
     )
-    if (alreadyApplied) return config
+    if (alreadyApplied) {
+      console.warn(
+        '@tokiwi/payload-translate-deepl: the plugin is already registered on this config, so this call is ignored. One instance per config: both would mount the same routes and the first would answer every request.',
+      )
+      return config
+    }
 
     // Without credentials every click would end in the same error, so the action
     // is left out entirely rather than offered and then refused. Said out loud:

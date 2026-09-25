@@ -116,6 +116,21 @@ describe('choosing collections', () => {
     expect(menuItems(twice, 'pages')).toHaveLength(1)
     expect(twice.endpoints).toHaveLength(2)
   })
+
+  it('warns when a second application is ignored, rather than dropping it silently', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const config = build([
+      collection('pages', [
+        { localized: true, name: 'title', type: 'text' },
+      ] as CollectionConfig['fields']),
+    ])
+    const once = await apply(credentials, config)
+
+    expect(await apply({ ...credentials, collections: ['posts'] }, once)).toBe(once)
+    expect(warn).toHaveBeenCalledTimes(1)
+    expect(warn.mock.calls[0]?.[0]).toContain('already registered')
+    warn.mockRestore()
+  })
 })
 
 describe('missing credentials', () => {

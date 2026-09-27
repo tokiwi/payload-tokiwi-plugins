@@ -70,14 +70,15 @@ export const unescapeXml = (input: string): string =>
  */
 export const splitSegment = (text: string): TaggedSegment | null => {
   if (!text) return null
-  const match = /^(\s*)([\s\S]*?)(\s*)$/.exec(text)
-  if (!match) return null
-  // The regex's three groups always participate, even for an empty match. The
-  // defaults are only to satisfy the compiler about `RegExpExecArray` indexing.
-  const [, leading = '', core, trailing = ''] = match
+  const core = text.trim()
   if (!core) return null
   // \p{L} rather than a-z: accented French, Greek in a formula, CJK.
   if (!/\p{L}/u.test(core)) return null
+  // Not `/^(\s*)([\s\S]*?)(\s*)$/`: that regex backtracks quadratically on
+  // text carrying a long run of whitespace that isn't at either end, which is
+  // exactly what pasted-in content produces.
+  const leading = text.slice(0, text.length - text.trimStart().length)
+  const trailing = text.slice(text.trimEnd().length)
   return { core, leading, trailing }
 }
 

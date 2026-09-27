@@ -27,6 +27,17 @@ describe('splitSegment', () => {
     expect(splitSegment('Ω')?.core).toBe('Ω')
     expect(splitSegment('研究')?.core).toBe('研究')
   })
+
+  it('stays linear on a long run of whitespace that sits inside the text, not at an edge', () => {
+    // A backtracking `^(\s*)([\s\S]*?)(\s*)$` costs quadratic time here: pasted
+    // content with irregular internal spacing hits this shape, not just a crafted input.
+    const text = `a${' '.repeat(60_000)}b`
+    const start = performance.now()
+    const segment = splitSegment(text)
+    const elapsed = performance.now() - start
+    expect(segment).toEqual({ core: text, leading: '', trailing: '' })
+    expect(elapsed).toBeLessThan(300)
+  })
 })
 
 describe('escaping', () => {

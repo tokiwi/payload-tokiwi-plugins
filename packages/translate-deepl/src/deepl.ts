@@ -55,7 +55,10 @@ const defaultSleep = (ms: number): Promise<void> =>
  * `/v2/v2/translate`.
  */
 export const buildTranslateUrl = (apiBase: string): string => {
-  const trimmed = apiBase.trim().replace(/\/+$/, '')
+  // A loop, not `/\/+$/`: that regex backtracks quadratically on a string of
+  // many slashes that does not end in one.
+  let trimmed = apiBase.trim()
+  while (trimmed.endsWith('/')) trimmed = trimmed.slice(0, -1)
   if (!trimmed) throw new DeeplError('DEEPL_API_BASE is not set', { fatal: true })
   if (/\/v2$/.test(trimmed)) return `${trimmed}/translate`
   return `${trimmed}/v2/translate`

@@ -56,7 +56,11 @@ jobs:
         shell: bash
 
       - name: Require a changeset when a package changes
-        if: github.event_name == 'pull_request'
+        # The release pull request is the one that consumes the changesets, so it
+        # touches packages/ with none left and this check could never pass on it.
+        if: >-
+          github.event_name == 'pull_request' &&
+          github.head_ref != format('changeset-release/{0}', github.base_ref)
         run: |
           git fetch --no-tags origin "${{ github.base_ref }}"
           if git diff --name-only "origin/${{ github.base_ref }}...HEAD" | grep -q '^packages/'; then

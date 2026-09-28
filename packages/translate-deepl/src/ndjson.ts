@@ -1,22 +1,15 @@
 /**
  * Reading the bulk endpoint's newline-delimited JSON as it arrives.
  *
- * Kept free of React so the framing rules (a chunk boundary can fall anywhere,
- * including mid-character) can be tested directly.
+ * Kept free of React so the framing rules can be tested directly: a chunk
+ * boundary can fall anywhere, including mid-character.
  */
 
 /**
  * Calls `onEvent` for every complete line in `body`, as soon as that line lands.
  *
  * A network chunk has nothing to do with a line: one chunk may carry several
- * events, half an event, or split a multi-byte character down the middle. The
- * decoder is therefore created with `{ stream: true }` on every decode so it can
- * hold a partial character back, and the tail of each chunk is buffered until a
- * newline actually shows up.
- *
- * A line that is not valid JSON is skipped rather than thrown: a proxy that
- * injects something into the stream should not lose the editor the progress of a
- * run that is otherwise fine.
+ * events, half an event, or split a multi-byte character down the middle.
  */
 export const readNdjson = async <T>(
   body: ReadableStream<Uint8Array>,

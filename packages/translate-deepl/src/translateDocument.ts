@@ -216,8 +216,7 @@ export const translateDocument = async ({
         continue
       }
       plainJobs.push({
-        // DeepL answers a slug with prose, so the result is normalised here rather
-        // than relying on the collection to own a slugifier.
+        // DeepL answers a slug with prose, so the result is normalised here.
         apply: (value) => {
           const normalized = config.normalizeSlug(value)
           if (!normalized) {
@@ -281,7 +280,7 @@ export const translateDocument = async ({
       }
 
       // A single run needs no tags: no XML to build, nothing to parse, and no way
-      // for the round-trip to fail. This is the common case in practice.
+      // for the round-trip to fail.
       if (group.segments.length === 1) {
         // `length === 1` was just checked, so index 0 exists.
         plainJobs.push(buildRawJob(group.segments[0]!, (value) => assign([value])))
@@ -373,9 +372,7 @@ export const translateDocument = async ({
 
   if (translated === 0) {
     // Nothing was translated, so there is nothing to save. Writing anyway would
-    // copy the source locale over the target verbatim: a silent "copy to locale"
-    // that nobody asked for, and the worst possible outcome of a DeepL outage or
-    // an exhausted time budget.
+    // copy the source locale over the target verbatim.
     if (partial && failures.length === 0) {
       failures.push({ path: '', reason: 'Ran out of time before DeepL answered.' })
     }
@@ -401,15 +398,11 @@ export const translateDocument = async ({
   /**
    * Whether this translation should be published rather than left as a draft.
    *
-   * Only a document that is already published: the source locale is on the site,
-   * so its translation belongs there too. One that has never been published stays
-   * a draft (translating a page must not be the act that puts it on the site),
-   * and a collection without drafts has nothing to publish, its write being live
-   * the moment it lands.
+   * Publishes only if the document is already published: one that has never been
+   * published stays a draft, and a collection without drafts has nothing to publish.
    *
-   * The published state is the one in the main table: a draft save writes a
-   * version row and leaves that table alone, so `_status` there answers this in a
-   * count, without loading the document again.
+   * `_status` lives in the main table, not the version row a draft save writes to,
+   * so a count query answers this without loading the document.
    */
   const shouldPublish = async (): Promise<boolean> => {
     const hasDrafts = Boolean(

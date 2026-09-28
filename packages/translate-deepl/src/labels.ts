@@ -1,9 +1,8 @@
 /**
  * Bilingual strings for the admin UI.
  *
- * Inline `{ en, fr }` objects resolved with `getTranslation`, rather than a
- * dictionary merged into `i18n.translations`: the plugin then needs no wiring in
- * `payload.config.ts` and adds no key a consumer has to know about.
+ * Inline `{ en, fr }` objects resolved with `getTranslation`. No wiring in
+ * `payload.config.ts`, no key a consumer has to know about.
  */
 
 export type Label = { en: string; fr: string }

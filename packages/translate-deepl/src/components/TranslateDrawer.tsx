@@ -4,11 +4,9 @@
  * The drawer both menu items open: pick a target locale, decide whether to
  * overwrite, confirm.
  *
- * Modelled on Payload's own `CopyLocaleData` (`@payloadcms/ui/dist/elements/
- * CopyLocaleData`), which is the same drawer with a copy instead of a
- * translation. It sticks to the public `@payloadcms/ui` barrel: `CopyLocaleData`
- * reaches for the package-private `DrawerHeader`, but `Drawer`'s `title` prop
- * renders the same header.
+ * Sticks to the public `@payloadcms/ui` barrel: `Drawer`'s `title` prop renders
+ * the same header a package-private `DrawerHeader` import would, without reaching
+ * past the package boundary.
  */
 
 import { getTranslation } from '@payloadcms/translations'
@@ -99,10 +97,8 @@ export const TranslateDrawer: React.FC<TranslateDrawerProps> = ({
 
         {/*
           `CheckboxInput`, not `CheckboxField`: the field variant registers with the
-          surrounding form through `useField`, so ticking it marked the *document*
-          as modified and tripped the "save before translating" guard below. Both
-          controls here are the presentational Input variants, which own their state
-          and leave the edit form alone.
+          surrounding form through `useField`, so ticking it would mark the
+          *document* as modified and trip the "save before translating" guard below.
         */}
         <CheckboxInput
           checked={overwrite}

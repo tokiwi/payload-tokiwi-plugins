@@ -48,17 +48,14 @@ export const TranslateMenuItem: React.FC<TranslateMenuItemProps> = ({ collection
   // cannot toggle each other's drawer.
   const drawerSlug = `${baseClass}-${slug}-${String(id ?? 'new')}`
 
-  // Drafts are only a review step where the collection has them. Everywhere else
-  // the translation is live the moment it is written, and the editor should know.
+  // A collection without drafts publishes the translation immediately.
   const hasDrafts = Boolean(
     docConfig && 'versions' in docConfig && typeof docConfig.versions === 'object'
       ? (docConfig.versions as { drafts?: unknown }).drafts
       : false,
   )
 
-  // What the endpoint will decide, said up front: a published document has its
-  // translation published in the target locale, an unpublished one keeps it as a
-  // draft, and without drafts there is nothing in between.
+  // What the endpoint will decide, said up front.
   const outcomeNotice = !hasDrafts
     ? labels.immediateNotice
     : hasPublishedDoc

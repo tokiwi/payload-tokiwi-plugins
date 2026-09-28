@@ -39,9 +39,8 @@ export type TranslateDocumentsArgs = {
 }
 
 /**
- * Thrown when a selection exceeds an explicitly configured `maxDocuments`. There
- * is no cap by default. This exists so a project that wants one gets a clear
- * refusal rather than a silently truncated run.
+ * Thrown when a selection exceeds an explicitly configured `maxDocuments`, so an
+ * oversized selection is refused instead of silently truncated. No cap by default.
  */
 export class TooManyDocumentsError extends Error {
   constructor(

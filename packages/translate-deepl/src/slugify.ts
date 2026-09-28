@@ -2,15 +2,8 @@
  * Slug normalisation, and recognising a slug nobody chose.
  *
  * DeepL answers a slug with prose: `about-us/management` comes back as
- * `à-propos-de-nous/équipe-de-direction`, so the result has to be normalised
- * before it is written. A collection may already do that in its own
- * `beforeValidate`, but the plugin cannot assume one exists, and a slug that
- * fails validation would abort the whole translate.
- *
- * `/` is deliberately preserved: on a collection whose slug is a URL path, it is
- * the segment separator, and on one whose slug is a single segment there is no `/`
- * to preserve in the first place. Projects whose rules differ can pass their own
- * `normalizeSlug`.
+ * `à-propos-de-nous/équipe-de-direction`. `/` is preserved, because on a
+ * collection whose slug is a URL path it is the segment separator.
  */
 
 /**
@@ -35,12 +28,9 @@ export const slugifyPath = (input: string): string => {
 }
 
 /**
- * A slug a migration or a backfill generated to satisfy a `required, unique`
- * constraint, rather than one an editor chose.
- *
- * It matters because such a slug is "already set" as far as the database is
- * concerned, so preserving it would leave the translated page on a meaningless
- * URL forever.
+ * A slug a migration generated to satisfy a `required, unique` constraint. It
+ * reads as "already set" to the database, so preserving it would leave the
+ * translated page on a meaningless URL.
  */
 export const DEFAULT_PLACEHOLDER_SLUG = /^untitled(-\d+)?$/i
 

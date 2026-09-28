@@ -67,9 +67,8 @@ export const buildTranslateUrl = (apiBase: string): string => {
 /**
  * Splits `texts` into requests that respect both of DeepL's limits: at most 50
  * entries, and a body comfortably under the ~128 KiB cap. A single entry larger
- * than the byte budget still gets its own request. The caller has already tried
- * to break it up, and letting DeepL reject it produces a far clearer message than
- * silently dropping it.
+ * than the byte budget still gets its own request, so DeepL's rejection is the
+ * error, not a silent drop.
  */
 export const batchItems = <T>(items: T[], textOf: (item: T) => string): T[][] => {
   const batches: T[][] = []
@@ -232,8 +231,8 @@ export class DeeplClient {
   }
 
   private async toError(response: Response): Promise<DeeplError> {
-    // The body may carry a `message`, but it may also be HTML from a proxy. Never
-    // let it grow unbounded into a toast.
+    // The body may carry a `message`, but it may also be HTML from a proxy, so it
+    // is truncated before reaching a toast.
     let detail = ''
     try {
       const text = (await response.text()).trim()

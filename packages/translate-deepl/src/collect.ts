@@ -1,6 +1,6 @@
 /**
  * Finding every localized value in a document, by walking the collection's own
- * field schema rather than guessing at the shape of the data.
+ * field schema.
  *
  * Three decisions are load-bearing. Walk `flattenedFields`, so `row`,
  * `collapsible` and unnamed `tabs` are already merged into their parent and `ui`
@@ -9,9 +9,9 @@
  * `blocks: []`. And skip a `blockType` that is no longer in the config instead of
  * throwing, because stale rows survive in stored JSON.
  *
- * It records paths rather than flattening to strings, it reports only *localized*
- * fields, and it never follows a relationship: a related document is its own
- * document, with its own Translate action.
+ * It records paths, reports only *localized* fields, and never follows a
+ * relationship: a related document is its own document, with its own Translate
+ * action.
  */
 
 import type { FlattenedBlock, FlattenedField, Payload } from 'payload'
@@ -23,12 +23,11 @@ import { MAX_DEPTH } from './constants'
 type Data = Record<string, unknown>
 
 /**
- * Structural keys Payload injects into every block and array row. They are never
- * content, and reporting them would be actively dangerous: under a *localized*
- * container the two locales hold different rows, so a row `id` copied from one
- * locale into the other breaks the identity matching that keeps the untranslated
- * locale's content alive. Hard-skipped rather than left to the configurable list,
- * because no project should ever be able to switch this off.
+ * Structural keys Payload injects into every block and array row, never content.
+ * Under a *localized* container the two locales hold different rows, so a row
+ * `id` copied from one locale into the other breaks the identity matching that
+ * keeps the untranslated locale's content alive. Hard-skipped, not part of the
+ * configurable list: no project should be able to switch this off.
  */
 const NEVER_REPORTED = new Set(['_uuid', 'blockName', 'blockType', 'id'])
 
@@ -66,8 +65,8 @@ const asData = (value: unknown): Data | null =>
   value && typeof value === 'object' && !Array.isArray(value) ? (value as Data) : null
 
 /**
- * Blocks are referenced by slug through `blockReferences`, so the inline `blocks`
- * array is usually empty and the real config lives in the top-level registry.
+ * A block referenced by slug through `blockReferences` leaves the inline `blocks`
+ * array empty, so the real config has to come from the top-level registry.
  */
 const resolveBlock = (
   payload: Payload,
@@ -84,8 +83,7 @@ const resolveBlock = (
  * Payload's own rule, from `fieldShouldBeLocalized` in `payload/shared`: a field
  * marked `localized` under a parent that is already localized is *not* separately
  * localized, because its value already sits inside the parent's per-locale bucket.
- * The flag therefore has to be threaded down the recursion rather than read per
- * field. This is exactly what Payload does in its own `beforeChange` traversal.
+ * The flag has to be threaded down the recursion, not read per field.
  */
 const isEffectivelyLocalized = (field: FlattenedField, parentIsLocalized: boolean): boolean =>
   parentIsLocalized || ('localized' in field && Boolean(field.localized))
@@ -122,8 +120,8 @@ const walk = (
       parentIsLocalized || ('localized' in field && Boolean(field.localized))
 
     switch (field.type) {
-      // Containers are always descended, localized or not: `Pages.blockBuilder` is
-      // not localized while almost every leaf inside it is.
+      // Containers are always descended, localized or not: a container like
+      // `Pages.blockBuilder` need not be localized for the leaves inside it to be.
       case 'array': {
         if (!Array.isArray(value)) break
         for (let index = 0; index < value.length; index++) {

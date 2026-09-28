@@ -43,11 +43,10 @@ const DEFAULT_LOCALE_MAP: Record<string, DeeplLanguagePair> = {
 }
 
 /**
- * Whether a collection has anything worth translating.
- *
- * This runs before Payload sanitizes the config, so `flattenedFields` does not
- * exist yet and the raw `fields` tree has to be walked by hand. Blocks declared
- * through `blockReferences` are the reason the block registry is consulted too.
+ * Whether a collection has anything worth translating, walked by hand since this
+ * runs before Payload sanitizes the config and `flattenedFields` does not exist
+ * yet. Consults the block registry too, since `blockReferences` leaves the
+ * inline `blocks` array empty.
  */
 const hasLocalizedField = (fields: Field[], blocks: Config['blocks'], depth = 0): boolean => {
   if (depth > MAX_DEPTH) return false
@@ -166,10 +165,7 @@ export const deeplTranslatePlugin =
       return config
     }
 
-    // Without credentials every click would end in the same error, so the action
-    // is left out entirely rather than offered and then refused. Said out loud:
-    // inside a project the plugin's code is there to read, but a missing button
-    // and no message is an hour lost against an installed package.
+    // Without credentials, the actions are removed rather than left to fail on click.
     const apiBase = options.apiBase ?? process.env.DEEPL_API_BASE
     const apiKey = options.apiKey ?? process.env.DEEPL_API_KEY
     if (!apiBase || !apiKey) {

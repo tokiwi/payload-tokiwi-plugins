@@ -3,12 +3,8 @@
 /**
  * "Translate selected" in the list view's actions menu.
  *
- * The checkboxes and the "select all" behaviour are Payload's own. This reads
- * them through `useSelection()`, which `ListControls` is rendered inside, and
- * hands the endpoint `getQueryParams()`. That is already Payload's encoding of
- * the selection: `id: { in: [...] }` for a handful of rows, or the list's current
- * filters when the editor chose "select all across pages". Nothing here has to
- * tell the two apart, and no ids are enumerated for a selection that spans pages.
+ * The checkboxes and "select all" are Payload's own `useSelection()`, whose
+ * `getQueryParams()` is already Payload's encoding of the selection.
  */
 
 import { PopupList, toast, useConfig, useLocale, useModal, useSelection } from '@payloadcms/ui'
@@ -40,8 +36,7 @@ export const TranslateListMenuItem: React.FC<TranslateListMenuItemProps> = ({ co
 
   const drawerSlug = `${baseClass}-list-${collectionSlug}`
 
-  // "All available" means every row matching the current filters, which is more
-  // than the page the editor can see, so the count comes from the query.
+  // "All available" spans more than the visible page, so the count comes from the query.
   const selectedCount = selectAll === 'allAvailable' ? (totalDocs ?? 0) : count
 
   const run = useCallback(
@@ -62,8 +57,7 @@ export const TranslateListMenuItem: React.FC<TranslateListMenuItemProps> = ({ co
           method: 'POST',
         })
 
-        // Anything that fails before the stream opens is still an ordinary error
-        // response: a bad locale, an empty selection, no permission.
+        // A failure before the stream opens is still an ordinary error response.
         if (!response.ok || !response.body) {
           const failure = (await response.json().catch(() => ({}))) as {
             errors?: { message?: string }[]
@@ -72,10 +66,9 @@ export const TranslateListMenuItem: React.FC<TranslateListMenuItemProps> = ({ co
           return
         }
 
-        // Once the stream opens the status is already committed to 200, so the
-        // outcome travels in the `done` line rather than in the status code.
-        // Held in an object because TypeScript cannot follow an assignment made
-        // inside the callback.
+        // The status is already committed to 200 once the stream opens, so the
+        // outcome travels in the `done` line. Held in an object since TypeScript
+        // cannot follow an assignment made inside the callback.
         const outcome: { done?: BulkTranslateResult } = {}
 
         await readNdjson<BulkProgressEvent>(response.body, (event) => {
@@ -107,8 +100,8 @@ export const TranslateListMenuItem: React.FC<TranslateListMenuItemProps> = ({ co
         const message = `${payload.documentsTranslated}/${payload.requested} ${t(labels.documentsTranslated)}`
 
         if (payload.documentsFailed > 0 || payload.partial) {
-          // Name the first few that did not make it. Re-running finishes them,
-          // and with "overwrite" off the ones already done cost nothing.
+          // Re-running finishes the rest, and with "overwrite" off the ones already
+          // done cost nothing.
           const names = payload.results
             .filter((result) => !result.ok)
             .slice(0, 3)

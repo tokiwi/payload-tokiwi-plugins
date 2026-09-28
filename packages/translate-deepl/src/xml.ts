@@ -59,14 +59,13 @@ export const unescapeXml = (input: string): string =>
   })
 
 /**
- * Splits a text node's value into the whitespace we keep and the text we send.
- * DeepL normalises whitespace next to a tag, and real content has runs whose
- * trailing double space is the only thing separating two sentences, so it never
- * goes inside the tag.
+ * Splits a text node's value into the whitespace kept and the text sent. The
+ * trailing whitespace never goes inside the tag, since DeepL normalises
+ * whitespace next to a tag and a run's trailing double space can be the only
+ * thing separating two sentences.
  *
- * Returns `null` when there is nothing worth translating: empty, whitespace only,
- * or without a single letter (`"—"`, `"2024"`, `"·"`). Those are kept byte-identical
- * and never billed.
+ * Returns `null` for nothing worth translating: empty, whitespace only, or
+ * without a single letter (`"—"`, `"2024"`, `"·"`).
  */
 export const splitSegment = (text: string): TaggedSegment | null => {
   if (!text) return null

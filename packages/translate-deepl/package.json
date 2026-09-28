@@ -1,6 +1,6 @@
 {
   "name": "@tokiwi/payload-translate-deepl",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Translate a Payload document into another locale with DeepL, from the admin panel.",
   "license": "MIT",
   "type": "module",

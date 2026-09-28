@@ -12,6 +12,10 @@ build/
 .next/
 out/
 next-env.d.ts
+# `next dev` writes this into every application it runs in. The rules that bind this
+# repository are in the AGENTS.md at the root.
+/app/AGENTS.md
+/test/app/AGENTS.md
 
 # Payload
 media/

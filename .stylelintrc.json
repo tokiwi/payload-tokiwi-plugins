@@ -3,6 +3,7 @@
   "ignoreFiles": ["_local/**"],
   "rules": {
     "selector-class-pattern": null,
+    "selector-id-pattern": null,
     "custom-property-pattern": null
   }
 }

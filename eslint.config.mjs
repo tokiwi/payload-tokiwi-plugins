@@ -4,7 +4,15 @@ import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
   {
-    ignores: ['**/dist/**', '**/.next/**', '**/node_modules/**', '_local/**', '.superpowers/**'],
+    ignores: [
+      '**/dist/**',
+      '**/.next/**',
+      '**/node_modules/**',
+      '_local/**',
+      '.superpowers/**',
+      'test/playwright-report/**',
+      'test/test-results/**',
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,

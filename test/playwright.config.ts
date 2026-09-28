@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
+import { FAKE_DEEPL_PORT } from './e2e/global-setup'
+
 const PORT = 3001
 const baseURL = `http://127.0.0.1:${PORT}`
 const serve = 'bun run --filter test-app prepare-db && bun run --filter test-app start'
@@ -7,6 +9,7 @@ const serve = 'bun run --filter test-app prepare-db && bun run --filter test-app
 export default defineConfig({
   testDir: './e2e',
   testMatch: '**/*.e2e.spec.ts',
+  globalSetup: './e2e/global-setup.ts',
   fullyParallel: false,
   workers: 1,
   forbidOnly: !!process.env.CI,
@@ -32,6 +35,8 @@ export default defineConfig({
     cwd: '..',
     env: {
       DATABASE_URI: 'file:./e2e.db',
+      DEEPL_API_BASE: `http://127.0.0.1:${FAKE_DEEPL_PORT}`,
+      DEEPL_API_KEY: 'e2e-key:fx',
       PAYLOAD_SECRET: 'e2e-secret',
     },
   },

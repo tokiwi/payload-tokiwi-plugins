@@ -1,0 +1,85 @@
+/**
+ * Places the Translate item between "Create new" and "Duplicate".
+ *
+ * Payload renders `editMenuItems` last in the document controls popup and offers
+ * no ordering API, but `PopupList.ButtonGroup` is a `flex-direction: column`
+ * container, so `order` is enough. Items that are not named keep `order: 3` and
+ * their source order, which flex preserves for equal values.
+ *
+ * Payload's own rules live in `@layer payload-default`. An unlayered rule such as
+ * this one wins over any layered rule whatever its specificity, so no
+ * `!important` is needed. Keep these rules unlayered.
+ *
+ * The built-in ids are the anchor rather than `#action-duplicate`, because the
+ * duplicate button renders as `#action-duplicate-locales` in its locale-picking
+ * variant and only one of the two is guaranteed to be present.
+ */
+.doc-controls__popup .popup-button-list {
+  > * {
+    order: 3;
+  }
+
+  > #copy-locale-data__button {
+    order: 0;
+  }
+
+  > #action-create {
+    order: 1;
+  }
+
+  > #action-translate-locale {
+    order: 2;
+  }
+}
+
+.deepl-translate {
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--base) * 0.5);
+    padding: var(--base) 0;
+  }
+
+  &__notice {
+    color: var(--theme-elevation-600);
+    font-size: 0.9em;
+  }
+
+  &__warning {
+    color: var(--theme-warning-600, var(--theme-elevation-800));
+  }
+
+  &__actions {
+    display: flex;
+    gap: calc(var(--base) * 0.5);
+    justify-content: flex-end;
+  }
+
+  &__progress {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--base) * 0.25);
+  }
+
+  &__progress-track {
+    background: var(--theme-elevation-100);
+    border-radius: var(--style-radius-s);
+    height: 6px;
+    overflow: hidden;
+  }
+
+  &__progress-fill {
+    background: var(--theme-success-500, var(--theme-elevation-800));
+    height: 100%;
+
+    /* The bar only ever advances, so a plain width transition reads as motion
+       rather than as the jitter an indeterminate spinner would give. */
+    transition: width 200ms ease-out;
+  }
+
+  &__progress-label {
+    color: var(--theme-elevation-600);
+    font-size: 0.9em;
+    margin: 0;
+  }
+}

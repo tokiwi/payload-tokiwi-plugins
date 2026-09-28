@@ -6,6 +6,8 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { buildConfig } from 'payload'
 import sharp from 'sharp'
 
+import { deeplTranslatePlugin } from '@tokiwi/payload-translate-deepl'
+
 import { Pages } from './collections/Pages'
 import { Users } from './collections/Users'
 import { seed } from './seed'
@@ -24,6 +26,15 @@ export default buildConfig({
     defaultLocale: 'fr',
   },
   onInit: seed,
+  plugins: [
+    // Unlike the showroom, the suites must always see the actions, so the
+    // credentials have a default: the end-to-end run points them at the fake
+    // DeepL server the Playwright global setup starts.
+    deeplTranslatePlugin({
+      apiBase: process.env.DEEPL_API_BASE || 'http://127.0.0.1:3002',
+      apiKey: process.env.DEEPL_API_KEY || 'test-key:fx',
+    }),
+  ],
   secret: process.env.PAYLOAD_SECRET || 'test-app-secret',
   sharp,
 })

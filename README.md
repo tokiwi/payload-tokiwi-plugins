@@ -4,7 +4,7 @@ Shared [Payload CMS 3](https://payloadcms.com) plugins used across Tokiwi projec
 developed together in one repository and published independently to npm under the
 `@tokiwi` scope.
 
-> Status: bootstrapping. No package is published yet.
+> Status: the first package is landing. Nothing is published to npm yet.
 
 ## Why this repo exists
 
@@ -16,7 +16,7 @@ The goal is that starting a Payload project means installing a few versioned pac
 rather than copying code:
 
 ```bash
-bun add @tokiwi/payload-theme
+bun add @tokiwi/payload-translate-deepl
 ```
 
 Each package is independent. Installing one never pulls in the others.
@@ -26,10 +26,10 @@ Each package is independent. Installing one never pulls in the others.
 Install it, register it in `payload.config.ts`, then regenerate Payload's import map:
 
 ```ts
-import { tokiwiTheme } from '@tokiwi/payload-theme'
+import { deeplTranslatePlugin } from '@tokiwi/payload-translate-deepl'
 
 export default buildConfig({
-  plugins: [tokiwiTheme({ siteName: 'Example' })],
+  plugins: [deeplTranslatePlugin()],
 })
 ```
 
@@ -42,6 +42,12 @@ bunx payload generate:types       # any package adding fields or collections
 and is never regenerated at runtime or during a production build. Skipping it leaves
 components silently missing from the admin panel. Re-run it after every install, update or
 removal.
+
+## Packages
+
+| package                                                       |                                                                           |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| [`@tokiwi/payload-translate-deepl`](packages/translate-deepl) | Translate a document into another locale with DeepL, from the admin panel |
 
 ## Repository layout
 
@@ -56,7 +62,7 @@ test/<suite>/   one integration suite per package
 
 The showroom is where the packages are developed and where they are verified to coexist.
 CI builds it, runs the suites, then packs every package and installs the tarballs into a
-scratch application — that last step is what catches a broken `exports` map.
+scratch application: that last step is what catches a broken `exports` map.
 
 Conventions are in [`AGENTS.md`](AGENTS.md), which is binding for humans and agents alike.
 
@@ -74,7 +80,7 @@ bun run build    # build the packages, the showroom and the test app, in depende
 ## Releasing
 
 Versioning and publishing are handled by [changesets](https://github.com/changesets/changesets).
-A pull request that changes a package includes a changeset describing the bump; merging to
+A pull request that changes a package includes a changeset describing the bump. Merging to
 `main` opens a release pull request, and merging that one publishes to npm.
 
 npm versions are immutable and cannot be replaced, which is why publishing is gated behind

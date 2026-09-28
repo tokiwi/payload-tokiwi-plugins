@@ -172,7 +172,10 @@ version in a `package.json`.
 Code, comments, documentation, commit messages and changelogs are in English.
 
 Comments earn their place: they explain a non-obvious decision, never what the line
-already says.
+already says. One sentence unless the reason genuinely needs two. No paraphrase of the
+branches below, no case for the rejected alternative ("rather than ..."), no claim about
+how often a case happens, no aside in a narrator's voice ("said out loud", "in
+practice"). A doc comment states the contract and the one fact the code cannot show.
 
 No writing tics, in prose, comments, commits or changesets:
 

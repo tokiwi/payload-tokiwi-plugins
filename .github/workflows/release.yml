@@ -17,6 +17,12 @@ jobs:
   release:
     name: Release pull request or publish
     runs-on: ubuntu-latest
+    # Gates the whole job, not only the publish, because the publish happens
+    # inside the changesets action and cannot be gated on its own without
+    # depending on an output this workflow cannot verify. The cost is one
+    # approval per push to main, including the ones that only refresh the
+    # release pull request.
+    environment: npm-publish
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -44,5 +50,4 @@ jobs:
           pr-title: 'Release packages'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true

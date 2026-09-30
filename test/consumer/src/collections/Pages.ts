@@ -10,6 +10,9 @@ export const Pages: CollectionConfig = {
     { name: 'summary', type: 'textarea', localized: true },
     { name: 'body', type: 'richText', localized: true },
     { name: 'url', type: 'text' },
+    // `blockReferences` and never `blocks`: the schemas come from the root registry the
+    // blocks plugin fills. A field carrying both is refused by Payload.
+    { name: 'layout', type: 'blocks', blockReferences: ['imageCarousel'], blocks: [] },
     {
       name: 'sections',
       type: 'blocks',

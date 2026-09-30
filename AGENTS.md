@@ -43,9 +43,9 @@ Never:
 - **Break a consumer silently.** A change to a package's options, exports or component
   paths is breaking and is released as a major bump.
 - **Build on a stale base.** Branch from current `main` and rebase onto it. A pull request
-  carries its package, the showroom wiring it needs and its tests. The workspace root, the
-  tooling versions and the CI belong to their own pull request: a branch that rebuilds them
-  is not reviewable.
+  carries its package, its tests and the showroom wiring it needs, dependencies included.
+  What belongs to its own pull request is the repository's own tooling: the root
+  `package.json`, the linters, the CI. A branch that rebuilds them is not reviewable.
 - **Bypass a gate.** No `--no-verify`, no skipped CI job, no version bumped by hand, no
   publish outside a release pull request. A failing gate is reported, not routed around.
 - **Claim a gate passed without its output.** "It builds" is not a result. The command
@@ -136,8 +136,7 @@ same CLI contract. The split is spelled out because this is where it matters mos
 - Templates are **Mantine** components (`@mantine/core`, `@mantine/carousel`), because that
   is what our projects render with, and a template that is not the code a project already
   runs gets rewritten on arrival. Mantine is an **optional** peer dependency: a consumer
-  registering the schemas alone never installs it. Any Tailwind in a template stays on core
-  utilities, no custom theme keys, no arbitrary values, no plugins.
+  registering the schemas alone never installs it.
 - A block enters the package only when its schema is identical in two projects. Compare
   field by field before writing it.
 
@@ -178,7 +177,9 @@ A file the runner does not match is not a test. Three globs run, nothing else:
 
 - `packages/<name>/test/**/*.spec.ts`: unit tests, importing the internals the exports map
   does not publish
-- `test/<suite>/**/*.int.spec.ts`: a suite booting Payload through a package's exports map
+- `test/<suite>/**/*.int.spec.ts`: a suite consuming a package the way a project does,
+  through its exports map. A suite that needs a live Payload goes under `test/app/test/`,
+  the one place with a database adapter on hand
 - `packages/<name>/test/types/**/*.tst.ts`: tstyche
 
 A build proves a package compiles, not that it works. Every package carries integration

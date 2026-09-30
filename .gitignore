@@ -19,10 +19,9 @@ next-env.d.ts
 
 # Payload
 media/
-# Payload rewrites this on every boot; nothing imports it yet. Anchored to the two
-# applications that generate one, so a future packages/*/payload-types.ts is not
-# silently swallowed by a bare pattern.
-/app/src/payload-types.ts
+# The showroom's types are committed and CI diffs them against a fresh generation. The
+# test application's are not: nothing there imports them. Anchored, so a future
+# packages/*/payload-types.ts is not silently swallowed by a bare pattern.
 /test/app/payload-types.ts
 
 # Environment

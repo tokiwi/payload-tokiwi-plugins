@@ -43,6 +43,19 @@ jobs:
       - run: bun run typecheck
       - run: bun run lint
 
+      # Both files are committed and read by the application, so a drift is only ever
+      # found by whoever it breaks next. `git status` and not `git diff`: a generated
+      # file that nobody committed is drift too.
+      - name: Fail on a stale import map or stale types
+        run: |
+          bun run --filter showroom generate:importmap
+          bun run --filter showroom generate:types
+          # Payload writes both files unformatted, and lint-staged formats what is
+          # committed, so the comparison is only meaningful after the same pass.
+          bunx prettier --write "app/src/payload-types.ts" "app/src/app/(payload)/admin/importMap.js"
+          git status --porcelain -- app/src
+          test -z "$(git status --porcelain -- app/src)"
+
       # For a schema-only package the exported types are the product, and `tsc` proves
       # they compile, not that they are still the right types. There is no
       # package yet; the guard disappears on its own once there is one.

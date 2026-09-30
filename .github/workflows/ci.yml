@@ -57,16 +57,8 @@ jobs:
           test -z "$(git status --porcelain -- app/src)"
 
       # For a schema-only package the exported types are the product, and `tsc` proves
-      # they compile, not that they are still the right types. There is no
-      # package yet; the guard disappears on its own once there is one.
-      - name: Type tests
-        run: |
-          if compgen -G "packages/*/" > /dev/null; then
-            bun run test:types
-          else
-            echo "No package yet, so no exported types to test."
-          fi
-        shell: bash
+      # they compile, not that they are still the right types.
+      - run: bun run test:types
 
       - name: Require a changeset when a package changes
         # The release pull request is the one that consumes the changesets, so it

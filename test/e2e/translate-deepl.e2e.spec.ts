@@ -18,6 +18,14 @@ test.describe('translate with deepl', () => {
     await page.getByRole('link', { name: 'Bonjour le monde' }).click()
 
     await page.locator('.doc-controls__popup button').click()
+
+    // The popup is portalled away from its trigger, so a selector that leans on an
+    // ancestor matches nothing and the item silently falls to the end of the list.
+    const order = await page
+      .locator('#action-translate-locale')
+      .evaluate((el) => getComputedStyle(el).order)
+    expect(order).toBe('2')
+
     await page.locator('#action-translate-locale').click()
 
     await page.locator('#field-targetLocale').click()

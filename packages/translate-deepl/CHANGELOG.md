@@ -1,5 +1,11 @@
 # @tokiwi/payload-translate-deepl
 
+## 0.1.1
+
+### Patch Changes
+
+- f0f3a30: Fix the "Translate to new language" item rendering last in the document controls menu, after Delete. It now appears between "Create New" and "Duplicate" as intended.
+
 ## 0.1.0
 
 ### Minor Changes

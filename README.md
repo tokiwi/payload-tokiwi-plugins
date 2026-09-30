@@ -47,6 +47,7 @@ removal.
 
 | package                                                       |                                                                           |
 | ------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| [`@tokiwi/payload-blocks-main`](packages/blocks-main)         | The block schemas every project needs, with front-end templates to copy   |
 | [`@tokiwi/payload-translate-deepl`](packages/translate-deepl) | Translate a document into another locale with DeepL, from the admin panel |
 
 ## Repository layout

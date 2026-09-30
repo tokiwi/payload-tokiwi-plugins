@@ -1,0 +1,50 @@
+{
+  "name": "@tokiwi/payload-blocks-main",
+  "version": "0.0.0",
+  "description": "The Payload block schemas that belong in every Tokiwi project, with front-end templates to copy.",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tokiwi/payload-tokiwi-plugins.git",
+    "directory": "packages/blocks-main"
+  },
+  "homepage": "https://github.com/tokiwi/payload-tokiwi-plugins/tree/main/packages/blocks-main",
+  "bin": {
+    "payload-blocks-main": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@mantine/carousel": "^9.6",
+    "@mantine/core": "^9.6",
+    "payload": "^3.90"
+  },
+  "peerDependenciesMeta": {
+    "@mantine/carousel": {
+      "optional": true
+    },
+    "@mantine/core": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "payload": "3.90.2",
+    "typescript": "5.7.3"
+  }
+}

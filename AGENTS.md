@@ -36,11 +36,16 @@ Never:
   need it".
 - **Ship branding.** Packages carry neutral defaults. Colours, copy and logos are plugin
   options supplied by the consuming project.
-- **Ship an opinion the consumer cannot remove.** No UI library, no design system, no
-  markup a project has to fight. A package that can only be used one way does not belong
-  here.
+- **Ship an opinion the consumer cannot remove.** Nothing behind an `exports` map carries
+  a UI library, a design system or markup a project has to fight. A package that can only
+  be used one way does not belong here. `templates/` is the exception, and only because a
+  template is copied rather than imported: the project owns the file and can delete it.
 - **Break a consumer silently.** A change to a package's options, exports or component
   paths is breaking and is released as a major bump.
+- **Build on a stale base.** Branch from current `main` and rebase onto it. A pull request
+  carries its package, the showroom wiring it needs and its tests. The workspace root, the
+  tooling versions and the CI belong to their own pull request: a branch that rebuilds them
+  is not reviewable.
 - **Bypass a gate.** No `--no-verify`, no skipped CI job, no version bumped by hand, no
   publish outside a release pull request. A failing gate is reported, not routed around.
 - **Claim a gate passed without its output.** "It builds" is not a result. The command
@@ -62,6 +67,11 @@ scripts/           repository tooling, run with bun
 A package directory is self-contained, with its own `package.json`, build and tests. It never
 imports another package by relative path, only through its package name, declared as a
 dependency.
+
+A new package is not done until the root `package.json` lists it in `devDependencies` as
+`workspace:*`, so the integration suite resolves it by name, and `test/consumer/src`
+imports it, because the pack job fails a package nothing there uses. It carries a
+`typecheck` script, a `tsconfig.build.json`, a README and a changeset.
 
 Packages resolve through their built `dist` and their `exports` map, in the showroom and
 in the suites alike. **Do not add tsconfig `paths` entries that short-circuit a package to
@@ -119,10 +129,15 @@ same CLI contract. The split is spelled out because this is where it matters mos
   prints the fields the block expects. No interactive wizard, no config file, no framework
   detection. It writes into someone else's project: it is the most dangerous thing here.
 - The showroom imports those same template files, so the showroom build type-checks them.
-  A broken template cannot be published.
-- Templates use **core Tailwind utilities only** (no custom theme keys, no arbitrary
-  values, no plugins), so a project on another styling stack can replace them
-  mechanically.
+  A broken template cannot be published. It reaches them through a tsconfig `paths` alias
+  onto `templates/`, the one alias this repository allows: templates are absent from the
+  `exports` map on purpose, and the alias points at published files, never at a package's
+  `src`.
+- Templates are **Mantine** components (`@mantine/core`, `@mantine/carousel`), because that
+  is what our projects render with, and a template that is not the code a project already
+  runs gets rewritten on arrival. Mantine is an **optional** peer dependency: a consumer
+  registering the schemas alone never installs it. Any Tailwind in a template stays on core
+  utilities, no custom theme keys, no arbitrary values, no plugins.
 - A block enters the package only when its schema is identical in two projects. Compare
   field by field before writing it.
 
@@ -147,7 +162,9 @@ protected so a red pull request cannot merge:
 - typecheck and lint
 - **type tests** (tstyche). For a schema-only package the exported types are the product.
   `tsc` proves they compile, not that they are still the right types.
-- build of the showroom (`app/`)
+- build of the showroom (`app/`), and its import map and `payload-types.ts` regenerated
+  and diffed. Both are committed, and a stale one is only ever found by whoever it breaks
+  next.
 - integration suites per package, and the central end-to-end suite
 - **pack and install**: `npm pack` each package, install the tarballs into
   `test/consumer/`, run `generate:importmap` there, build it. This is the only job that
@@ -156,6 +173,13 @@ protected so a red pull request cannot merge:
 
 Locally, lint-staged runs format and lint on staged files. That is the entire local
 ceremony: this is a handful of plugins, not a framework.
+
+A file the runner does not match is not a test. Three globs run, nothing else:
+
+- `packages/<name>/test/**/*.spec.ts`: unit tests, importing the internals the exports map
+  does not publish
+- `test/<suite>/**/*.int.spec.ts`: a suite booting Payload through a package's exports map
+- `packages/<name>/test/types/**/*.tst.ts`: tstyche
 
 A build proves a package compiles, not that it works. Every package carries integration
 tests for the things wiring gets wrong: transformer idempotence, `disabled: true` as a

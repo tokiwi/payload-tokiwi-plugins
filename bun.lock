@@ -48,7 +48,7 @@
     },
     "packages/translate-deepl": {
       "name": "@tokiwi/payload-translate-deepl",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "devDependencies": {
         "@payloadcms/translations": "3.90.2",
         "@payloadcms/ui": "3.90.2",

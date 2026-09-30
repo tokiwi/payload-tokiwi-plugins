@@ -3,7 +3,11 @@
   "compilerOptions": {
     "plugins": [{ "name": "next" }],
     "paths": {
-      "@payload-config": ["./src/payload.config.ts"]
+      "@payload-config": ["./src/payload.config.ts"],
+      // Templates are deliberately absent from a package's `exports` map, so the showroom
+      // reaches the real published files rather than a copy of them. This is the only
+      // alias here, and it points at `templates/`, never at a package's `src`.
+      "@templates/blocks-main/*": ["../packages/blocks-main/templates/*"]
     },
     "incremental": true,
     // Payload generates `admin/importMap.js`, which the generated route files

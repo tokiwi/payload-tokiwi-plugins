@@ -65,9 +65,12 @@ export interface Config {
   auth: {
     users: UserAuthOperations
   }
-  blocks: {}
+  blocks: {
+    imageCarousel: ImageCarouselBlock
+  }
   collections: {
     pages: Page
+    media: Media
     users: User
     'payload-kv': PayloadKv
     'payload-locked-documents': PayloadLockedDocument
@@ -77,6 +80,7 @@ export interface Config {
   collectionsJoins: {}
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>
+    media: MediaSelect<false> | MediaSelect<true>
     users: UsersSelect<false> | UsersSelect<true>
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>
     'payload-locked-documents':
@@ -121,6 +125,39 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ImageCarouselBlock".
+ */
+export interface ImageCarouselBlock {
+  heading?: string | null
+  slides: {
+    image: number | Media
+    id?: string | null
+  }[]
+  id?: string | null
+  blockName?: string | null
+  blockType: 'imageCarousel'
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number
+  alt?: string | null
+  updatedAt: string
+  createdAt: string
+  url?: string | null
+  thumbnailURL?: string | null
+  filename?: string | null
+  mimeType?: string | null
+  filesize?: number | null
+  width?: number | null
+  height?: number | null
+  focalX?: number | null
+  focalY?: number | null
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "pages".
  */
 export interface Page {
@@ -144,6 +181,7 @@ export interface Page {
     [k: string]: unknown
   } | null
   url?: string | null
+  layout?: ImageCarouselBlock[] | null
   sections?:
     | {
         heading?: string | null
@@ -226,6 +264,10 @@ export interface PayloadLockedDocument {
         value: number | Page
       } | null)
     | ({
+        relationTo: 'media'
+        value: number | Media
+      } | null)
+    | ({
         relationTo: 'users'
         value: number | User
       } | null)
@@ -281,6 +323,7 @@ export interface PagesSelect<T extends boolean = true> {
   summary?: T
   body?: T
   url?: T
+  layout?: T | {}
   sections?:
     | T
     | {
@@ -296,6 +339,24 @@ export interface PagesSelect<T extends boolean = true> {
   updatedAt?: T
   createdAt?: T
   _status?: T
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T
+  updatedAt?: T
+  createdAt?: T
+  url?: T
+  thumbnailURL?: T
+  filename?: T
+  mimeType?: T
+  filesize?: T
+  width?: T
+  height?: T
+  focalX?: T
+  focalY?: T
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

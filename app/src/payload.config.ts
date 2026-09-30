@@ -6,8 +6,10 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { buildConfig } from 'payload'
 import sharp from 'sharp'
 
+import { imageCarousel, tokiwiBlocksMain } from '@tokiwi/payload-blocks-main'
 import { deeplTranslatePlugin } from '@tokiwi/payload-translate-deepl'
 
+import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Users } from './collections/Users'
 
@@ -15,7 +17,7 @@ const dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default buildConfig({
   admin: { user: Users.slug, importMap: { baseDir: path.resolve(dirname) } },
-  collections: [Pages, Users],
+  collections: [Pages, Media, Users],
   db: sqliteAdapter({
     client: { url: process.env.DATABASE_URI || 'file:./showroom.db' },
   }),
@@ -25,6 +27,18 @@ export default buildConfig({
     defaultLocale: 'fr',
   },
   plugins: [
+    tokiwiBlocksMain({
+      // `heading` is absent from the shipped schema: the showroom adds it through the
+      // block's escape hatch, the way a project does.
+      blocks: [
+        imageCarousel({
+          fields: (defaultFields) => [
+            { name: 'heading', type: 'text', localized: true },
+            ...defaultFields,
+          ],
+        }),
+      ],
+    }),
     // The showroom exists to render every package, so the actions are always
     // registered: a real key in the environment makes them work end to end, and
     // the placeholder below still renders the menu items, the drawer and the

@@ -62,3 +62,6 @@ _local/
 
 # SDD scratch
 .superpowers/
+
+# Playwright MCP browser automation scratch
+.playwright-mcp/

@@ -36,7 +36,7 @@
     "eslint-plugin-react-hooks": "^5",
     "husky": "^9",
     "lint-staged": "^16",
-    "payload": "3.90.2",
+    "payload": "3.92.0",
     "prettier": "^3",
     "stylelint": "^16",
     "stylelint-config-standard-scss": "^14",

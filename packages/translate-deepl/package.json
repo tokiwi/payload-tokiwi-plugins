@@ -39,10 +39,10 @@
   },
   "devDependencies": {
     "@payloadcms/translations": "3.90.2",
-    "@payloadcms/ui": "3.90.2",
+    "@payloadcms/ui": "3.92.0",
     "@types/react": "^19",
     "next": "16.3.6",
-    "payload": "3.90.2",
+    "payload": "3.92.0",
     "react": "19.2.1",
     "sass": "^1.93",
     "typescript": "5.7.3"
